@@ -5,6 +5,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.zeldadungeons.client.gui.overlay.GuiOverlay;
 import net.zeldadungeons.client.render.RenderHandler;
+import net.zeldadungeons.event.ToolTipHandler;
 import net.zeldadungeons.util.Log;
 
 public class CombinedClientProxy implements IProxy {
@@ -13,9 +14,9 @@ public class CombinedClientProxy implements IProxy {
     
     @Override
     public void preInit() {
-	Log.getLogger().info("proxy");
 	OBJLoader.INSTANCE.addDomain(ZeldaDungeons.MODID);
     	MinecraftForge.EVENT_BUS.register(GuiOverlay.INSTANCE);
+    	MinecraftForge.EVENT_BUS.register(ToolTipHandler.INSTANCE);
     }
 
     @Override

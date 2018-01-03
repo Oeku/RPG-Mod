@@ -11,8 +11,7 @@ public class PlayerLevels implements IPlayerLevels {
     private SkillStamina staminaSkill = new SkillStamina(1, 0);
     private SkillCombat combatSkill = new SkillCombat(1, 0);
 
-    public PlayerLevels(EntityPlayer entity) {
-	setPlayer(entity);
+    public PlayerLevels() {
     }
 
     @Override

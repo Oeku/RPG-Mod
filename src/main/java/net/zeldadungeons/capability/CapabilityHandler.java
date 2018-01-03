@@ -37,9 +37,8 @@ public class CapabilityHandler {
     
     @SubscribeEvent
     public void attachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
-	//Deprecated
 	if (event.getObject() instanceof EntityPlayer) {
-	    final PlayerLevels playerlevels = new PlayerLevels((EntityPlayer) event.getObject());
+	    final PlayerLevels playerlevels = new PlayerLevels();
 	    event.addCapability(CapabilityPlayerLevels.ID, new CapabilityProviderSerializable<>(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING, playerlevels));
 	}
     }

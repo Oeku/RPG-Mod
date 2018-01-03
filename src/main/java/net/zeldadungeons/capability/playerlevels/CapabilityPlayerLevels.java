@@ -58,6 +58,6 @@ public class CapabilityPlayerLevels {
 		cS.setDamage(combat[2]);
 
 	    }
-	}, () -> new PlayerLevels(null));
+	}, () -> new PlayerLevels());
     }
 }

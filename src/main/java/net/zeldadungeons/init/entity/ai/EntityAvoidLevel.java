@@ -14,9 +14,7 @@ import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.Vec3d;
 import net.zeldadungeons.capability.playerlevels.CapabilityPlayerLevels;
 
-public class EntityAvoidLevel extends EntityAIAvoidEntity{
-
-
+public class EntityAvoidLevel<T extends EntityPlayer> extends EntityAIAvoidEntity {
 
     private int neededLevel;
 
@@ -24,13 +22,13 @@ public class EntityAvoidLevel extends EntityAIAvoidEntity{
 	super(entityIn, EntityPlayer.class, avoidDistanceIn, farSpeedIn, nearSpeedIn);
 	this.neededLevel = neededLevel;
     }
-    
-@Override
-public boolean shouldExecute() {
-    if(this.closestLivingEntity.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).getCombatSkill().getLevel() > this.neededLevel){
-	return super.shouldExecute();
+
+    @Override
+    public boolean shouldExecute() {
+	if (this.closestLivingEntity != null) if (this.closestLivingEntity.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).getCombatSkill().getLevel() > this.neededLevel) {
+	    return super.shouldExecute();
+	}
+	return false;
     }
-    return false;
-}
 
 }
