@@ -60,8 +60,8 @@ public class SkillHealth extends Skill {
 	    if (player != null)
 		player.setHealth(0F); 
 	    this.currentHealth = 0;
+	    this.sendUpdatePackets(player);
 	}
-	this.sendUpdatePackets(player);
     }
 
     /**
@@ -84,12 +84,13 @@ public class SkillHealth extends Skill {
 
     public void setPlayer(EntityPlayer player) {
 	this.player = player;
+	this.sendUpdatePackets(player);
     }
 
     @Override
     public void sendUpdatePackets(EntityPlayer player) {
 	if (player != null && !player.world.isRemote && player instanceof EntityPlayerMP)
-	    NetworkHandler.getInstance().sendTo(new PacketHealthValues(this.currentHealth, this.maxHealth, this.level, (double) currentHealth / (double) maxHealth), (EntityPlayerMP) player);
+	    NetworkHandler.getInstance().sendTo(new PacketHealthValues(this.currentHealth, this.maxHealth, this.level, this.totalExp), (EntityPlayerMP) player);
     }
     
     public void damagePlayer(boolean withArmor, int amount){

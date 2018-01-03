@@ -41,6 +41,7 @@ public class SkillStamina extends Skill {
 	this.regen = maxLevel/level;
 	calculateMaxStamina(level);
     }
+    
 
     /**
      * Calculates the maximum stamina for the given level.
@@ -72,7 +73,6 @@ public class SkillStamina extends Skill {
 	}
 	if (this.currentStamina > this.maxStamina / 2)
 	    if(player != null)player.removeActivePotionEffect(Potion.REGISTRY.getObjectById(2));
-	this.sendUpdatePackets(player);
     }
 
     /**
@@ -151,7 +151,7 @@ public class SkillStamina extends Skill {
     @Override
     public void sendUpdatePackets(EntityPlayer player) {
 	if (player != null && player.isServerWorld() && player instanceof EntityPlayerMP) {
-	    NetworkHandler.getInstance().sendTo(new PacketStaminaValues(this.currentStamina, this.maxStamina, this.level, 1D), (EntityPlayerMP) player);
+	    NetworkHandler.getInstance().sendTo(new PacketStaminaValues(this.currentStamina, this.maxStamina, this.level, this.totalExp), (EntityPlayerMP) player);
 	}
     }
     

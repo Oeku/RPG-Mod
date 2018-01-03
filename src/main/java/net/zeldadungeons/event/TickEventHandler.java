@@ -48,7 +48,7 @@ public class TickEventHandler {
     }
 
     public void executePlayerTick(EntityPlayer e, int ticks) {
-	e.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).sendUpdates();
+	e.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).getStaminaSkill().sendUpdatePackets(e);;
 	SkillStamina stamina = e.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).getStaminaSkill();
 	if (!e.capabilities.isCreativeMode) {
 	    stamina.regenStamina(ticks);

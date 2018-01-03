@@ -6,22 +6,25 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import net.zeldadungeons.client.gui.overlay.GuiOverlay;
+import net.zeldadungeons.capability.playerlevels.CapabilityPlayerLevels;
+import net.zeldadungeons.capability.playerlevels.IPlayerLevels;
+import net.zeldadungeons.client.PlayerData;
+import net.zeldadungeons.skill.SkillHealth;
 
 public class PacketStaminaValues implements IMessage {
 
     public static HandlerPacketStaminaValues handler = new HandlerPacketStaminaValues();
 
-    private double maxStamina;
-    private double currentStamina;
-    private double share;
+    private int maxStamina;
+    private int currentStamina;
     private int level;
+    private int totalExp;
 
-    public PacketStaminaValues(double currentStamina, double maxStamina, int level, double share) {
-	this.currentStamina = currentStamina;
-	this.maxStamina = maxStamina;
-	this.share = share;
+    public PacketStaminaValues(int currentHealth, int maxHealth, int level, int totalExp) {
+	this.currentStamina = currentHealth;
+	this.maxStamina = maxHealth;
 	this.level = level;
+	this.totalExp = totalExp;
     }
 
     public PacketStaminaValues() {
@@ -29,18 +32,18 @@ public class PacketStaminaValues implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-	this.currentStamina = buf.readDouble();
-	this.maxStamina = buf.readDouble();
-	this.share = buf.readDouble();
+	this.currentStamina = buf.readInt();
+	this.maxStamina = buf.readInt();
 	this.level = buf.readInt();
+	this.totalExp = buf.readInt();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-	buf.writeDouble(currentStamina);
-	buf.writeDouble(maxStamina);
-	buf.writeDouble(share);
+	buf.writeInt(currentStamina);
+	buf.writeInt(maxStamina);
 	buf.writeInt(level);
+	buf.writeInt(totalExp);
     }
 
     static class HandlerPacketStaminaValues implements IMessageHandler<PacketStaminaValues, IMessage> {
@@ -48,20 +51,12 @@ public class PacketStaminaValues implements IMessage {
 	@Override
 	public IMessage onMessage(PacketStaminaValues message, MessageContext ctx) {
 	    if (ctx.side == Side.CLIENT) {
-		 GuiOverlay.renderCurrentStamina = message.currentStamina;
-		 GuiOverlay.renderCurrentStamina = message.currentStamina;
-		/*Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-		    public void run() {
-			processMessage(message);
-		    }
-		});*/
+		PlayerData.setStaminaLevel(message.level);
+		PlayerData.setStaminaXP(message.totalExp);
+		PlayerData.setCurrentStamina(message.currentStamina);
+		PlayerData.setMaxStamina(message.maxStamina);
 	    }
 	    return null;
-	}
-
-	void processMessage(PacketStaminaValues message) {
-	    GuiOverlay.renderCurrentStamina = message.currentStamina;
-	    GuiOverlay.renderCurrentStamina = message.currentStamina;
 	}
     }
 }

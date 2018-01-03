@@ -1,6 +1,10 @@
 package net.zeldadungeons.client.gui.overlay;
 
+import net.zeldadungeons.CombinedClientProxy;
 import net.zeldadungeons.ZeldaDungeons;
+import net.zeldadungeons.capability.playerlevels.CapabilityPlayerLevels;
+import net.zeldadungeons.capability.playerlevels.IPlayerLevels;
+import net.zeldadungeons.client.PlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -9,14 +13,18 @@ import net.minecraft.util.ResourceLocation;
 public class GuiOverlay {
 
     public static final GuiOverlay INSTANCE = new GuiOverlay();
-    public static double renderCurrentHealth = 11.0D;
-    public static double renderMaxHealth = 11.0D;
+    public static double renderCurrentHealth = 11D;
+    public static double renderMaxHealth = 11D;
     
     public static double renderCurrentStamina = 11.0D;
     public static double renderMaxStamina = 11.0D;
 
     public void onRenderGameOverlay(ScaledResolution res) {
 	Minecraft mc = Minecraft.getMinecraft();
+	this.renderCurrentHealth = (double)PlayerData.getCurrentHealth();
+	this.renderMaxHealth = (double)PlayerData.getMaxHealth();
+	this.renderCurrentStamina = (double)PlayerData.getCurrentStamina();
+	this.renderMaxStamina = (double)PlayerData.getMaxStamina();
 	this.renderBackground(res, mc);
 	this.renderHealthBar(res, mc);
 	this.renderStaminaBar(res, mc);
@@ -28,7 +36,6 @@ public class GuiOverlay {
 	mc.renderEngine.bindTexture(new ResourceLocation(ZeldaDungeons.MODID, "textures/gui/background.png"));
 	mc.ingameGUI.drawScaledCustomSizeModalRect(0, 0, 0, 0, 320, 180, res.getScaledWidth(), res.getScaledHeight(), 320, 180);
 	GlStateManager.popMatrix();
-
     }
 
     private void renderHealthBar(ScaledResolution res, Minecraft mc) {

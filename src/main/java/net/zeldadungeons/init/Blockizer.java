@@ -79,6 +79,7 @@ public class Blockizer {
 
 	    registry.registerAll(blocks);
 	    registerTileEntities();
+	    registry.iterator();
 	}
 
 	/**

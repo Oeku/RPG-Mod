@@ -32,7 +32,6 @@ public class ZeldaDungeons
     public static final String NAME = "zeldadungeons";
     public static final String SERVER_PROXY_CLASS = "net.zeldadungeons.DedicatedServerProxy";
     public static final String CLIENT_PROXY_CLASS = "net.zeldadungeons.CombinedClientProxy";
-    public static final RegistryBuilder regBuilder = new RegistryBuilder();
     
     @Mod.Instance(MODID)
     public static ZeldaDungeons instance = new ZeldaDungeons();

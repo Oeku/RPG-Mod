@@ -6,22 +6,25 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import net.zeldadungeons.client.gui.overlay.GuiOverlay;
+import net.zeldadungeons.capability.playerlevels.CapabilityPlayerLevels;
+import net.zeldadungeons.capability.playerlevels.IPlayerLevels;
+import net.zeldadungeons.client.PlayerData;
+import net.zeldadungeons.skill.SkillHealth;
 
 public class PacketHealthValues implements IMessage {
 
     public static HandlerPacketHealthValues handler = new HandlerPacketHealthValues();
 
-    private double maxHealth;
-    private double currentHealth;
-    private double share;
+    private int maxHealth;
+    private int currentHealth;
     private int level;
+    private int totalExp;
 
-    public PacketHealthValues(double currentHealth, double maxHealth, int level, double share) {
+    public PacketHealthValues(int currentHealth, int maxHealth, int level, int totalExp) {
 	this.currentHealth = currentHealth;
 	this.maxHealth = maxHealth;
-	this.share = share;
 	this.level = level;
+	this.totalExp = totalExp;
     }
 
     public PacketHealthValues() {
@@ -29,18 +32,18 @@ public class PacketHealthValues implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-	this.currentHealth = buf.readDouble();
-	this.maxHealth = buf.readDouble();
-	this.share = buf.readDouble();
+	this.currentHealth = buf.readInt();
+	this.maxHealth = buf.readInt();
 	this.level = buf.readInt();
+	this.totalExp = buf.readInt();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-	buf.writeDouble(currentHealth);
-	buf.writeDouble(maxHealth);
-	buf.writeDouble(share);
+	buf.writeInt(currentHealth);
+	buf.writeInt(maxHealth);
 	buf.writeInt(level);
+	buf.writeInt(totalExp);
     }
 
     static class HandlerPacketHealthValues implements IMessageHandler<PacketHealthValues, IMessage> {
@@ -48,20 +51,12 @@ public class PacketHealthValues implements IMessage {
 	@Override
 	public IMessage onMessage(PacketHealthValues message, MessageContext ctx) {
 	    if (ctx.side == Side.CLIENT) {
-		GuiOverlay.renderCurrentHealth = message.currentHealth;
-		GuiOverlay.renderMaxHealth = message.maxHealth;
-		/*Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-		    public void run() {
-			processMessage(message);
-		    }
-		});*/
+		PlayerData.setHealthLevel(message.level);
+		PlayerData.setHealthXP(message.totalExp);
+		PlayerData.setCurrentHealth(message.currentHealth);
+		PlayerData.setMaxHealth(message.maxHealth);
 	    }
 	    return null;
-	}
-
-	void processMessage(PacketHealthValues message) {
-	    GuiOverlay.renderCurrentHealth = message.currentHealth;
-	    GuiOverlay.renderMaxHealth = message.maxHealth;
 	}
     }
 }
