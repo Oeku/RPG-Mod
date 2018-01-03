@@ -64,7 +64,7 @@ public class Blockizer {
 	 * @param event The event
 	 */
 	@SubscribeEvent
-	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
+	public void registerBlocks(final RegistryEvent.Register<Block> event) {
 	    final IForgeRegistry<Block> registry = event.getRegistry();
 
 	    final Block[] blocks = {
@@ -88,7 +88,7 @@ public class Blockizer {
 	 * @param event The event
 	 */
 	@SubscribeEvent
-	public static void registerItemBlocks(final RegistryEvent.Register<Item> event) {
+	public void registerItemBlocks(final RegistryEvent.Register<Item> event) {
 	    final ItemBlock[] items = { new ItemBlock(PRESSURE_SWITCH), new ItemBlock(CHEST), new ItemBlock(SALT_ORE), new ItemBlock(LUMINOUS_ORE), new ItemBlock(TOPAZ_ORE), new ItemBlock(SAPPHIRE_ORE), new ItemBlock(COOKING_POT),
 
 	    };
