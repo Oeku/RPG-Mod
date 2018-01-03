@@ -24,23 +24,21 @@ import net.zeldadungeons.network.GuiHandler;
 import net.zeldadungeons.network.NetworkHandler;
 import net.zeldadungeons.util.Log;
 
-@Mod(modid = ZeldaDungeons.MODID, version = ZeldaDungeons.VERSION, name = ZeldaDungeons.NAME)
+@Mod(modid = ZeldaDungeons.MODID, name = ZeldaDungeons.NAME, version = ZeldaDungeons.VERSION)
 public class ZeldaDungeons
 {
     public static final String MODID = "zeldadungeons";
     public static final String VERSION = "alpha 1.0";
     public static final String NAME = "zeldadungeons";
-    public static final String SERVER_PROXY_CLASS = "net.zeldadungeons.ServerProxy";
-    public static final String CLIENT_PROXY_CLASS = "net.zeldadungeons.ClientProxy";
+    public static final String SERVER_PROXY_CLASS = "net.zeldadungeons.DedicatedServerProxy";
+    public static final String CLIENT_PROXY_CLASS = "net.zeldadungeons.CombinedClientProxy";
     public static final RegistryBuilder regBuilder = new RegistryBuilder();
     
     @Mod.Instance(MODID)
     public static ZeldaDungeons instance = new ZeldaDungeons();
     
     @SidedProxy(serverSide = SERVER_PROXY_CLASS, clientSide = CLIENT_PROXY_CLASS)
-    public static CommonProxy proxy;
-    public static ClientProxy client;
-    public static ServerProxy server;
+    public static IProxy proxy;
     public static final EventBus EVENT_BUS = new EventBus(); 
     
     public static final Random RANDOM = new Random();
@@ -49,32 +47,11 @@ public class ZeldaDungeons
     public void preInit(FMLPreInitializationEvent event)
     {
     	/**Testing Area**/
-	for (int i = 0; i < 4; ++i) { //execute this 4 times
-	    int j = i * 5; //j-values: 0, 5, 10, 15
-	    int k = (i + 1) * 5; //k-values: 5, 10, 15, 20
-	    Log.getLogger().info(i);
-	    Log.getLogger().info(j);
-	    Log.getLogger().info(k);
-	    for (int l = 0; l < 4; ++l) {
-		int i1 = (j + l) * 33;
-		int j1 = (j + l + 1) * 33;
-		int k1 = (k + l) * 33;
-		int l1 = (k + l + 1) * 33;  
-		    Log.getLogger().info(i1);
-		    Log.getLogger().info(j1);
-		    Log.getLogger().info(k1);
-		    Log.getLogger().info(l1);
-
-		
-	    }
-	}
-		
-		/**End**/
+	/**End**/
     	Log.logString("PreInitialization - Arpg");
     	CapabilityHandler.INSTANCE.registerCapabilities();
     	NetworkHandler.init();
-    	proxy.registerEntityRenders();
-    	proxy.registerObjInstance();
+    	proxy.init();
     	this.registerBusses();
     }
     
@@ -85,20 +62,18 @@ public class ZeldaDungeons
     	NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
     	Generizer.registerWorldGenerators();
     	Recipizer.registerSmeltings();
-    	proxy.registerRenders();
-    	proxy.registerKeys();
-    	
+    	proxy.init();    	
     }
     
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
+	proxy.postInit();
     	Log.logString("PostInitialization - Arpg");
     }
     
     public void registerBusses()
     {
-    	proxy.registerBusses();
     	MinecraftForge.EVENT_BUS.register(ToolTipHandler.INSTANCE);
     	MinecraftForge.EVENT_BUS.register(TickEventHandler.INSTANCE);
     	MinecraftForge.EVENT_BUS.register(RenderEventHandler.INSTANCE);

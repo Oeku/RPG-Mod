@@ -38,8 +38,7 @@ public class CapabilityHandler {
     
     @SubscribeEvent
     public void attachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
-	if (event.getObject().world.isRemote)
-	    return;
+	//Deprecated
 	if (event.getObject() instanceof ICustomEntity) {
 	    final EntityLevels entitylevels = new EntityLevels((EntityLivingBase) event.getObject(), new EntityLevelsContainer((EntityLivingBase) event.getObject(), 1, 1, 1));
 	    event.addCapability(CapabilityEntityLevels.ID, new CapabilityProviderSerializable<>(CapabilityEntityLevels.ENTITY_LEVELS_CAPABILITY, CapabilityEntityLevels.DEFAULT_FACING, entitylevels));
