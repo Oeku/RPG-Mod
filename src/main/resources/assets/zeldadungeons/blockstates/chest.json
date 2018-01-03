@@ -1,0 +1,14 @@
+{
+   "forge_marker":1,
+   "variants":{
+      "open=false":{ 
+         "model":"zeldadungeons:chest_bottom"
+      },
+      "open=true":{  
+         "model":"zeldadungeons:chest_bottom"
+      },
+      "inventory":{  
+         "model":"zeldadungeons:chest_bottom"
+      }
+   }
+}

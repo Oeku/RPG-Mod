@@ -1,0 +1,36 @@
+# Blocks
+tile.zeldadungeons:sapphire_ore.name=Sapphire Ore
+tile.zeldadungeons:topaz_ore.name=Topaz Ore
+tile.zeldadungeons:luminous_ore.name=Luminous Ore
+tile.zeldadungeons:salt_ore.name=Salt Ore
+tile.zeldadungeons:amber_block.name=Amberstone
+tile.zeldadungeons:pressure_switch.name=Pressure Switch
+
+
+
+
+#Items
+item.zeldadungeons:sapphire.name=Sapphire
+item.zeldadungeons:topaz.name=Topaz
+item.zeldadungeons:amber.name=Amber
+item.zeldadungeons:luminous_stone.name=Luminous Stone
+item.zeldadungeons:salt.name=Salt
+
+item.zeldadungeons:amber_pickaxe.name=Amber Pickaxe
+item.zeldadungeons:amber_axe.name=Amber Axe
+item.zeldadungeons:amber_shovel.name=Amber Shovel
+item.zeldadungeons:amber_sword.name=Amber Sword
+
+item.zeldadungeons:sapphire_pickaxe.name=Sapphire Pickaxe
+item.zeldadungeons:sapphire_axe.name=Sapphire Axe
+item.zeldadungeons:sapphire_shovel.name=Sapphire Shovel
+item.zeldadungeons:sapphire_sword.name=Sapphire Sword
+
+item.zeldadungeons:sappize_boots.name=Sappize Boots
+item.zeldadungeons:sappize_leggings.name=Sappize Leggings
+item.zeldadungeons:sappize_chestplate.name=Sappize Chestplate
+item.zeldadungeons:sappize_helmet.name=Sappize Helmet
+
+item.zeldadungeons:health_shard.name=Health Shard
+item.zeldadungeons:heart_container.name = Heart Vessel
+item.zeldadungeons:small_key.name=Small Key

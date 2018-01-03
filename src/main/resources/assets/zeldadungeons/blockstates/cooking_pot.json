@@ -1,0 +1,18 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "zeldadungeons:cooking_pot_cooking"
+    },
+    "variants": {
+        "cooking": {
+            "true": {
+                "model": "zeldadungeons:cooking_pot_cooking"
+            },
+            "false": { 
+                "model": "zeldadungeons:cooking_pot"
+            }
+        },
+        "inventory": [ { } ]
+    }
+}
+

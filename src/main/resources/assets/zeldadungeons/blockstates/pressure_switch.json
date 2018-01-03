@@ -1,0 +1,13 @@
+{
+	"forge_marker": 1,
+	"variants": {
+		"variant": {
+			"a": {
+				"model": "zeldadungeons:pressure_switch.a"
+			},
+			"b": {
+				"model": "zeldadungeons:pressure_switch.b"
+			}
+		}
+	}
+}

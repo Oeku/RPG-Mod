@@ -1,0 +1,13 @@
+{
+   "forge_marker":1,
+   "defaults": {
+        "model": "zeldadungeons:amber_block",
+        "textures": {
+            "all": "zeldadungeons:blocks/amber_block"
+        }
+    },
+    "variants": {
+            "normal": [ { } ],
+            "inventory": [ { } ]        
+    }
+}

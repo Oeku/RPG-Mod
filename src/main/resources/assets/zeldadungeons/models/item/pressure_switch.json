@@ -1,0 +1,6 @@
+{
+    "parent": "zeldadungeons:block/pressure_switch.a",
+    "textures": {
+        "layer0": "zeldadungeons:items/pressure_switch"
+    }
+}

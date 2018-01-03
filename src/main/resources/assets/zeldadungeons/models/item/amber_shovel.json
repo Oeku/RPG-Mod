@@ -1,0 +1,8 @@
+{
+    "forge_marker": 1,
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "zeldadungeons:items/amber_shovel"
+    }
+}
+

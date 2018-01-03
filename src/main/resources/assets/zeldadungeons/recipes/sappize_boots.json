@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X X",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "zeldadungeons:topaz"
+    },
+    "X": {
+      "item": "zeldadungeons:sapphire"
+    }
+  },
+  "result": {
+    "item": "zeldadungeons:sappize_boots"
+  }
+}

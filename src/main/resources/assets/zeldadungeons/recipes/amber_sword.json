@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "X",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "zeldadungeons:amber"
+    }
+  },
+  "result": {
+    "item": "zeldadungeons:amber_sword"
+  }
+}
