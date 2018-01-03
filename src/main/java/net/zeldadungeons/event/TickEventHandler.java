@@ -15,11 +15,11 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import net.zeldadungeons.capability.entitylevels.CapabilityEntityLevels;
 import net.zeldadungeons.capability.entitylevels.EntityLevelsContainer;
 import net.zeldadungeons.capability.playerlevels.CapabilityPlayerLevels;
 import net.zeldadungeons.capability.playerlevels.IPlayerLevels;
 import net.zeldadungeons.init.Itemizer;
+import net.zeldadungeons.init.entity.EntityMobBase;
 import net.zeldadungeons.init.entity.ICustomEntity;
 import net.zeldadungeons.skill.SkillCombat;
 import net.zeldadungeons.skill.SkillHealth;
@@ -62,12 +62,6 @@ public class TickEventHandler {
 
     @SubscribeEvent
     public void onAttack(LivingHurtEvent event) {
-	/**
-	 * SOURCE -player : amount = player skill -custom : amount = custom
-	 * skill -normal : amount = amount TARGER -player : setPlayerHealth
-	 * amount = 0 -custom : setEntityHealth -> amount = 0 -normal :
-	 * setAmount
-	 */
 	int j = 0;
 	float f = event.getAmount();
 	Entity exactsource = event.getSource().getImmediateSource();
@@ -84,8 +78,8 @@ public class TickEventHandler {
 
 	// tests whether there is a living attacker. if so, it updates the
 	// amount of this damage event to the damage of this attacker
-	if (exactsource != null && exactsource instanceof ICustomEntity) {
-	    EntityLevelsContainer c = event.getSource().getImmediateSource().getCapability(CapabilityEntityLevels.ENTITY_LEVELS_CAPABILITY, CapabilityEntityLevels.DEFAULT_FACING).getContainer();
+	if (exactsource != null && exactsource instanceof EntityMobBase) {
+	    EntityLevelsContainer c = ((EntityMobBase) event.getSource().getImmediateSource()).getContainer();
 	    if (c.getDamage() != 0)
 		j = c.getDamage();
 	}
@@ -102,11 +96,11 @@ public class TickEventHandler {
 	    if (i < 0)
 		i = 0;
 	    hS.setCurrentHealth(hS.getCurrentHealth() - i);
-	} else if (event.getEntityLiving() instanceof ICustomEntity) {
-	    EntityLevelsContainer c1 = event.getEntityLiving().getCapability(CapabilityEntityLevels.ENTITY_LEVELS_CAPABILITY, CapabilityEntityLevels.DEFAULT_FACING).getContainer();
+	} else if (event.getEntityLiving() instanceof EntityMobBase) {
+	    EntityLevelsContainer c1 = ((EntityMobBase) event.getEntityLiving()).getContainer();
 	    c1.setCurrentHealth(c1.getCurrentHealth() - i);
 	}
-	if (event.getEntity() instanceof ICustomEntity || event.getEntity() instanceof EntityPlayer) {
+	if (event.getEntity() instanceof EntityMobBase || event.getEntity() instanceof EntityPlayer) {
 	    f = 0;
 	}
 	event.setAmount(f);
@@ -119,10 +113,6 @@ public class TickEventHandler {
 	    SkillHealth skill = e.getEntityPlayer().getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).getHealthSkill();
 	    skill.gainExp(e.getItem().getItem().getCount());
 	    e.getItem().getItem().setCount(0);
-	    Log.getLogger().info(skill.getTotalExp());
-	    Log.getLogger().info(skill.getCurrentHealth());
-	    Log.getLogger().info(skill.getExpToNext());
-	    Log.getLogger().info(skill.getLevel());
 	}
     }
 }

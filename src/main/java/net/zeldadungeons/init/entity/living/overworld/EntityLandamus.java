@@ -1,5 +1,7 @@
 package net.zeldadungeons.init.entity.living.overworld;
 
+import java.util.Random;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -12,27 +14,40 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
+import net.zeldadungeons.ZeldaDungeons;
+import net.zeldadungeons.capability.entitylevels.EntityLevelsContainer;
+import net.zeldadungeons.init.entity.EntityMobBase;
 import net.zeldadungeons.init.entity.ICustomEntity;
+import net.zeldadungeons.init.entity.ai.EntityAvoidLevel;
 
-public class EntityLandamus extends EntityMob implements ICustomEntity {
+public class EntityLandamus extends EntityMobBase implements ICustomEntity {
 
     public EntityLandamus(World worldIn) {
-	super(worldIn);
-
+	super(worldIn, new EntityLevelsContainer());
+	Random r = ZeldaDungeons.RANDOM;
+	int level = r.nextInt(10) + 1;
+	int health = this.container.calculateMaxHealth(level);
+	int damage = this.container.calculateDamage(level);
+	this.setEntityProperties(level, health, damage);
     }
+    
+    
 
     @Override
     protected void initEntityAI() {
+	this.tasks.addTask(1, new EntityAvoidLevel(this, 20F, 0.2D, 1D, 2));
 	this.tasks.addTask(0, new EntityAISwimming(this));
 	this.tasks.addTask(2, new EntityAIAttackMelee(this, 2.0D, false));
 	this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
 	this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
 	this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+	
 	this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
     }
 
@@ -83,4 +98,6 @@ public class EntityLandamus extends EntityMob implements ICustomEntity {
     protected SoundEvent getStepSound() {
 	return SoundEvents.ENTITY_PIG_STEP;
     }
+    
+   
 }

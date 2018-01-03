@@ -13,12 +13,11 @@ public class EntityLevelsContainer {
 
     private int currentHealth;
 
-    public EntityLevelsContainer(EntityLivingBase entity) {
-	this.entity = entity;
+    public EntityLevelsContainer() {
     }
 
     public EntityLevelsContainer(EntityLivingBase entity, int damage, int level, int health) {
-	this(entity);
+	this();
 	this.damage = damage;
 	this.level = level;
 	this.maxHealth = health;

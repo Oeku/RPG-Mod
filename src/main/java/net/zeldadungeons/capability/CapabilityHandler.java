@@ -11,7 +11,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.zeldadungeons.ZeldaDungeons;
-import net.zeldadungeons.capability.entitylevels.CapabilityEntityLevels;
 import net.zeldadungeons.capability.entitylevels.EntityLevels;
 import net.zeldadungeons.capability.entitylevels.EntityLevelsContainer;
 import net.zeldadungeons.capability.playerlevels.CapabilityPlayerLevels;
@@ -39,11 +38,7 @@ public class CapabilityHandler {
     @SubscribeEvent
     public void attachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
 	//Deprecated
-	if (event.getObject() instanceof ICustomEntity) {
-	    final EntityLevels entitylevels = new EntityLevels((EntityLivingBase) event.getObject(), new EntityLevelsContainer((EntityLivingBase) event.getObject(), 1, 1, 1));
-	    event.addCapability(CapabilityEntityLevels.ID, new CapabilityProviderSerializable<>(CapabilityEntityLevels.ENTITY_LEVELS_CAPABILITY, CapabilityEntityLevels.DEFAULT_FACING, entitylevels));
-	    this.setEntityProperties(event.getObject(), entitylevels);
-	} else if (event.getObject() instanceof EntityPlayer) {
+	if (event.getObject() instanceof EntityPlayer) {
 	    final PlayerLevels playerlevels = new PlayerLevels((EntityPlayer) event.getObject());
 	    event.addCapability(CapabilityPlayerLevels.ID, new CapabilityProviderSerializable<>(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING, playerlevels));
 	}
@@ -79,7 +74,6 @@ public class CapabilityHandler {
 
     public void registerCapabilities() {
 	CapabilityPlayerLevels.register();
-	CapabilityEntityLevels.register();
     }
 
     @SubscribeEvent
