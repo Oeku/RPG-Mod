@@ -1,13 +1,10 @@
 package net.zeldadungeons.init.crafting;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.Item;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.zeldadungeons.ZeldaDungeons;
 
 public class CookingMeal extends IForgeRegistryEntry.Impl<CookingMeal> {
     /** A List of Ingredients that the given cooking recipe needs to have
@@ -26,7 +23,7 @@ public class CookingMeal extends IForgeRegistryEntry.Impl<CookingMeal> {
 	this.displayName = name;
     }
     
-    public CookingMeal setIngredients(int count, Item... items){
+    public CookingMeal setIngredients(Item... items){
 	this.ingredients = items;
 	return this;
     }
@@ -38,6 +35,18 @@ public class CookingMeal extends IForgeRegistryEntry.Impl<CookingMeal> {
     
     public String getDisplayName(){
 	return this.displayName;
+    }
+    
+    public boolean isApplicableFor(List<Item> itemsIn){
+	for(int i = 0; i < ingredients.length; i++){
+	    int occurences = 0;
+	    for(Item item : itemsIn){
+		if(ingredients[i] == item){
+		    occurences++;
+		}
+	    }
+	}
+	return false;
     }
   
 }

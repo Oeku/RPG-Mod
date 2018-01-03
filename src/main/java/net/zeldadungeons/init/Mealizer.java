@@ -18,7 +18,7 @@ import net.zeldadungeons.util.Log;
 @ObjectHolder("zeldadungeons:cooking_meal")
 public class Mealizer {
     
-    public static final CookingMeal FRIES = new CookingMeal("fries", "Fries").setIngredients(2, Items.POTATO, Itemizer.SALT).setValues(new int[]{1, 2}, new int[]{2, 4});
+    public static final CookingMeal FRIES = new CookingMeal("fries", "Fries").setIngredients(Items.POTATO, Itemizer.SALT).setValues(new int[]{1, 2}, new int[]{2, 4});
     
     
     
@@ -35,7 +35,7 @@ public class Mealizer {
     public static void registerRegistries(RegistryEvent.NewRegistry e){
 	net.minecraftforge.registries.RegistryBuilder<CookingMeal> builder = new net.minecraftforge.registries.RegistryBuilder<CookingMeal>();
 	builder.setType(CookingMeal.class);
-	ResourceLocation key = new ResourceLocation("cooking_meal");
+	ResourceLocation key = new ResourceLocation(ZeldaDungeons.MODID, "cooking_meal");
 	builder.setName(key);
 	builder.setDefaultKey(key);
 	builder.create();
