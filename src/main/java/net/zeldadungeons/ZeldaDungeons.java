@@ -74,7 +74,6 @@ public class ZeldaDungeons
     
     public void registerBusses()
     {
-    	MinecraftForge.EVENT_BUS.register(ToolTipHandler.INSTANCE);
     	MinecraftForge.EVENT_BUS.register(TickEventHandler.INSTANCE);
     	MinecraftForge.EVENT_BUS.register(RenderEventHandler.INSTANCE);
     	MinecraftForge.EVENT_BUS.register(CapabilityHandler.INSTANCE);

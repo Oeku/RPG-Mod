@@ -38,7 +38,7 @@ public class TickEventHandler {
 	ticks++;
 	World world = e.world;
 	if (!world.isRemote) {
-	    List<Entity> list = world.getLoadedEntityList();
+	    List<Entity> list = world.loadedEntityList;
 	    for (Entity entity : list) {
 		if (entity instanceof EntityPlayer) {
 		    this.executePlayerTick((EntityPlayer) entity, ticks);
@@ -48,8 +48,7 @@ public class TickEventHandler {
     }
 
     public void executePlayerTick(EntityPlayer e, int ticks) {
-	if (ticks == 1)
-	    e.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).sendUpdates();
+	e.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).sendUpdates();
 	SkillStamina stamina = e.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).getStaminaSkill();
 	if (!e.capabilities.isCreativeMode) {
 	    stamina.regenStamina(ticks);
