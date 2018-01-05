@@ -1,5 +1,7 @@
 package net.zeldadungeons;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -11,15 +13,15 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
 import net.zeldadungeons.capability.CapabilityHandler;
 import net.zeldadungeons.event.RenderEventHandler;
 import net.zeldadungeons.event.SpawnEventHandler;
 import net.zeldadungeons.event.TickEventHandler;
-import net.zeldadungeons.event.ToolTipHandler;
 import net.zeldadungeons.init.Generizer;
-import net.zeldadungeons.init.Itemizer;
 import net.zeldadungeons.init.Recipizer;
+import net.zeldadungeons.init.cooking.CookingEffectAmpl;
+import net.zeldadungeons.init.cooking.CookingManager;
+import net.zeldadungeons.init.cooking.ECookingEffect;
 import net.zeldadungeons.network.GuiHandler;
 import net.zeldadungeons.network.NetworkHandler;
 import net.zeldadungeons.util.Log;
@@ -46,6 +48,28 @@ public class ZeldaDungeons
     public void preInit(FMLPreInitializationEvent event)
     {
     	/**Testing Area**/
+	List<CookingEffectAmpl> list = new ArrayList<CookingEffectAmpl>();
+	list.add(new CookingEffectAmpl(ECookingEffect.CHILLY, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.HEART, 3));
+	list.add(new CookingEffectAmpl(ECookingEffect.NEUTRAL, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.STAMINA, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.STAMINA, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.DISGUSTING, 5));
+	list.add(new CookingEffectAmpl(ECookingEffect.HEART, 3));
+	list.add(new CookingEffectAmpl(ECookingEffect.SATURATING, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.SATURATING, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.SATURATING, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.SATURATING, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.SATURATING, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.SATURATING, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.SATURATING, 1));
+	list.add(new CookingEffectAmpl(ECookingEffect.SATURATING, -20));
+
+
+	list = CookingManager.combineEffects(list);
+	for(CookingEffectAmpl e : list){
+	    Log.getLogger().info(e.getEffect().getDisplay()+e.getAmpl());
+	}
 	/**End**/
     	Log.logString("PreInitialization - Arpg");
     	CapabilityHandler.INSTANCE.registerCapabilities();

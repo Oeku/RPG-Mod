@@ -1,4 +1,4 @@
-package net.zeldadungeons.init.crafting;
+package net.zeldadungeons.init.cooking;
 
 import net.minecraft.item.Item;
 

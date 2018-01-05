@@ -17,7 +17,7 @@ public class Modelizer {
 	public static final Modelizer INSTANCE = new Modelizer();
 
 	@SubscribeEvent
-	public void registerAll(final ModelRegistryEvent e) {
+	public static void registerAll(final ModelRegistryEvent e) {
 		INSTANCE.registerItemModels();
 		INSTANCE.registerBlockModels();
 	}

@@ -73,8 +73,8 @@ public class Itemizer {
     public static Item BLOCK_EDITOR;
 
     @SubscribeEvent
-    public void registerItems(final RegistryEvent.Register<Item> event) {
-	Log.getLogger().info("initItems");
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+	Log.getLogger().info("d");
 	SAPPHIRE = new ItemResource("sapphire");
 	AMBER = new ItemResource("amber");
 	TOPAZ = new ItemResource("topaz");

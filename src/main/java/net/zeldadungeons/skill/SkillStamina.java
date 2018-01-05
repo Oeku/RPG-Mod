@@ -64,6 +64,7 @@ public class SkillStamina extends Skill {
     public void setCurrentStamina(int i) {
 	if (i <= this.maxStamina)
 	    this.currentStamina = i;
+	else this.currentStamina = maxStamina;
 	if (i <= 0) {
 	    this.currentStamina = 0;
 	    if (player.isSprinting()) {

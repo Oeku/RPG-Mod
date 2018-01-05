@@ -51,7 +51,6 @@ public class Blockizer {
 	ModelResourceLocation model = new ModelResourceLocation(ZeldaDungeons.MODID + ":" + name, "inventory");
 	ModelLoader.setCustomModelResourceLocation(item, 0, model);
 	ModelBakery.registerItemVariants(item, model);
-	Log.getLogger().info("renderBlock" + block.getRegistryName());
     }
 
     @Mod.EventBusSubscriber(modid = ZeldaDungeons.MODID)
@@ -64,7 +63,7 @@ public class Blockizer {
 	 * @param event The event
 	 */
 	@SubscribeEvent
-	public void registerBlocks(final RegistryEvent.Register<Block> event) {
+	public static void registerBlocks( RegistryEvent.Register<Block> event) {
 	    final IForgeRegistry<Block> registry = event.getRegistry();
 
 	    final Block[] blocks = {
@@ -88,7 +87,7 @@ public class Blockizer {
 	 * @param event The event
 	 */
 	@SubscribeEvent
-	public void registerItemBlocks(final RegistryEvent.Register<Item> event) {
+	public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
 	    final ItemBlock[] items = { new ItemBlock(PRESSURE_SWITCH), new ItemBlock(CHEST), new ItemBlock(SALT_ORE), new ItemBlock(LUMINOUS_ORE), new ItemBlock(TOPAZ_ORE), new ItemBlock(SAPPHIRE_ORE), new ItemBlock(COOKING_POT),
 
 	    };

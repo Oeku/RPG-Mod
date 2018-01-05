@@ -60,8 +60,9 @@ public class SkillHealth extends Skill {
 	    if (player != null)
 		player.setHealth(0F); 
 	    this.currentHealth = 0;
-	    this.sendUpdatePackets(player);
 	}
+	if(i>this.maxHealth)this.currentHealth = this.maxHealth;
+	this.sendUpdatePackets(player);
     }
 
     /**
@@ -105,5 +106,9 @@ public class SkillHealth extends Skill {
     public boolean willDamageKill(int i){
 	if(i >= this.currentHealth)return true;
 	else return false;
+    }
+    
+    public void heal(int i){
+	this.setCurrentHealth(this.getCurrentHealth()+i);
     }
 }

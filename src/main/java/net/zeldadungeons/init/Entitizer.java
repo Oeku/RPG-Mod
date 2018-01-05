@@ -26,7 +26,7 @@ public class Entitizer {
     private static int entityID = 0;
 
     @SubscribeEvent
-    public void registerEntities(RegistryEvent.Register<EntityEntry> event) {
+    public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
 	final EntityEntry[] entries = { createBuilder("landamus").entity(EntityLandamus.class).tracker(100, 1, true).build(), createBuilder("gorok").entity(EntityGorok.class).tracker(100, 1, true).build(),
 		createBuilder("prooper").entity(EntityProoper.class).tracker(100, 1, true).build(),
 
@@ -35,7 +35,7 @@ public class Entitizer {
 	addSpawns();
     }
 
-    private <E extends Entity> EntityEntryBuilder<E> createBuilder(final String name) {
+    private static <E extends Entity> EntityEntryBuilder<E> createBuilder(final String name) {
 	final EntityEntryBuilder<E> builder = EntityEntryBuilder.create();
 	final ResourceLocation registryName = new ResourceLocation(ZeldaDungeons.MODID, name);
 	return builder.id(registryName, entityID++).name(registryName.toString());

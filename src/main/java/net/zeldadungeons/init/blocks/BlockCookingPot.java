@@ -3,6 +3,9 @@ package net.zeldadungeons.init.blocks;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -33,7 +36,7 @@ import net.zeldadungeons.init.blocks.BlockPressureSwitch.EnumType;
 import net.zeldadungeons.init.entity.tile.TileEntityCookingPot;
 import net.zeldadungeons.util.Log;
 
-public class BlockCookingPot extends BlockContainer {
+public class BlockCookingPot extends Block{
 
     public static final AxisAlignedBB BOX = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1D, 0.55D, 1D);
     public static final IProperty<Boolean> COOKING = PropertyBool.create("cooking");
@@ -64,10 +67,15 @@ public class BlockCookingPot extends BlockContainer {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-	return new TileEntityCookingPot(10, 1000);
+    public boolean hasTileEntity() {
+        return true;
     }
-
+    
+    @Nullable
+    public TileEntity createTileEntity(World world, IBlockState state)
+    {
+       return new TileEntityCookingPot(10, 1000);
+    }
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 	if(worldIn.isRemote)return false;
