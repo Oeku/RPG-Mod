@@ -1,13 +1,12 @@
 package net.zeldadungeons.init.blocks;
 
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -15,14 +14,10 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityDropper;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -31,8 +26,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeProvider;
 import net.zeldadungeons.ZeldaDungeons;
-import net.zeldadungeons.init.blocks.BlockPressureSwitch.EnumType;
+import net.zeldadungeons.init.Generizer;
 import net.zeldadungeons.init.entity.tile.TileEntityCookingPot;
 import net.zeldadungeons.util.Log;
 
@@ -67,19 +64,24 @@ public class BlockCookingPot extends Block{
     }
 
     @Override
-    public boolean hasTileEntity() {
+    public boolean hasTileEntity(IBlockState state) {
         return true;
     }
     
     @Nullable
     public TileEntity createTileEntity(World world, IBlockState state)
     {
+	Log.logString("create");
        return new TileEntityCookingPot(10, 1000);
     }
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 	if(worldIn.isRemote)return false;
-	((TileEntityCookingPot) worldIn.getTileEntity(pos)).logThings();
+	Log.getLogger().info(BiomeProvider.allowedBiomes.contains(Generizer.MEDIEVAL_HILLS));
+	List<Biome> list = Lists.newArrayList();
+	list.add(Generizer.MEDIEVAL_HILLS);
+	BlockPos pos1 = worldIn.getBiomeProvider().findBiomePosition(pos.getX(), pos.getZ(), 10000, list, worldIn.rand);
+	Log.getLogger().info(pos.getX()+"  "+pos.getY()+ " " + pos.getZ());
 	return true;
     }
     
@@ -113,5 +115,11 @@ public class BlockCookingPot extends Block{
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         return this.BOX;
+    }
+
+    public static void setState(TileEntityCookingPot tileEntityCookingPot, BlockPos pos, World worldIn) {
+	worldIn.setBlockState(pos, worldIn.getBlockState(pos).withProperty(COOKING, tileEntityCookingPot.isCooking()));
+	tileEntityCookingPot.validate();
+	worldIn.setTileEntity(pos, tileEntityCookingPot);	
     }
 }

@@ -9,10 +9,12 @@ import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.zeldadungeons.capability.playerlevels.CapabilityPlayerLevels;
+import net.zeldadungeons.init.Dimensionizer;
 import net.zeldadungeons.init.entity.living.overworld.EntityGorok;
 import net.zeldadungeons.init.entity.living.overworld.EntityLandamus;
 import net.zeldadungeons.init.entity.living.overworld.EntityProoper;
 import net.zeldadungeons.util.Log;
+import net.zeldadungeons.world.TeleporterCustom;
 
 public class SpawnEventHandler {
     public static final SpawnEventHandler INSTANCE = new SpawnEventHandler();
@@ -37,5 +39,7 @@ public class SpawnEventHandler {
     @SubscribeEvent
     public void onPlayerLogIn(PlayerLoggedInEvent e){
 	e.player.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).setPlayer(e.player);
+	e.player.world.getMinecraftServer().getPlayerList().transferPlayerToDimension((EntityPlayerMP) e.player, Dimensionizer.medievalID, new TeleporterCustom(e.player.world.getMinecraftServer().getWorld(Dimensionizer.medievalID)));
+
     }
 }

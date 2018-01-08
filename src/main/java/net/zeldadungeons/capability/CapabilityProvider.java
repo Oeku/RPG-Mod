@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.zeldadungeons.util.Log;
 
 public class CapabilityProvider<HANDLER> implements ICapabilityProvider {
 	
@@ -26,7 +27,10 @@ public class CapabilityProvider<HANDLER> implements ICapabilityProvider {
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	    if(capability.getName().equals("net.zeldadungeons.capability.playerlevels.IPlayerLevels") || capability.getName().equals("net.zeldadungeons.capability.playerlevels.ICookingData")){
 		return getCapability().cast(getInstance());
+	    }
+	    else return null;
 	}
 	
 	public final Capability<HANDLER> getCapability(){

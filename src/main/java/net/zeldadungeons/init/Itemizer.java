@@ -1,28 +1,26 @@
 package net.zeldadungeons.init;
 
-import net.zeldadungeons.ZeldaDungeons;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.zeldadungeons.ZeldaDungeons;
 import net.zeldadungeons.init.items.ItemBlockEditor;
 import net.zeldadungeons.init.items.ItemFairySlingshot;
 import net.zeldadungeons.init.items.ItemHeartContainer;
+import net.zeldadungeons.init.items.ItemModFood;
 import net.zeldadungeons.init.items.ItemResource;
 import net.zeldadungeons.init.items.ItemSmallKey;
 import net.zeldadungeons.init.items.armor.ItemArmorSappize;
-import net.zeldadungeons.init.items.armor.ItemCustomArmor;
 import net.zeldadungeons.init.items.tools.ItemModAxe;
 import net.zeldadungeons.init.items.tools.ItemModPickaxe;
 import net.zeldadungeons.init.items.tools.ItemModSpade;
 import net.zeldadungeons.init.items.tools.ItemModSword;
-import net.zeldadungeons.util.Log;
 
 @Mod.EventBusSubscriber(modid = ZeldaDungeons.MODID)
 @ObjectHolder(ZeldaDungeons.MODID)
@@ -37,6 +35,7 @@ public class Itemizer {
 	public static final ItemArmor.ArmorMaterial CUSTOM1 = EnumHelper.addArmorMaterial("custom1", "custom1", 15, new int[] { 3, 6, 8, 3 }, 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.0F);
 
     }
+
 
     /** Items **/
     // Resources
@@ -64,6 +63,9 @@ public class Itemizer {
     // pickups
     public static Item HEALTH_SHARD;
 
+    //custom food
+    public static  ItemModFood MEAL;
+
     // Other
 
     public static Item HEART_CONTAINER;
@@ -74,7 +76,6 @@ public class Itemizer {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-	Log.getLogger().info("d");
 	SAPPHIRE = new ItemResource("sapphire");
 	AMBER = new ItemResource("amber");
 	TOPAZ = new ItemResource("topaz");
@@ -99,6 +100,7 @@ public class Itemizer {
 
 	HEALTH_SHARD = new Item().setRegistryName("health_shard").setUnlocalizedName("health_shard");
 
+	MEAL = new ItemModFood();
 	// Other
 
 	HEART_CONTAINER = new ItemHeartContainer("heart_container");
@@ -119,6 +121,8 @@ public class Itemizer {
 
 		// pickups
 		HEALTH_SHARD,
+		
+		MEAL,
 
 		// Other
 		HEART_CONTAINER, SMALL_KEY, FAIRY_SLINGSHOT, BLOCK_EDITOR, };

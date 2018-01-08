@@ -16,4 +16,8 @@ public class ItemResource extends Item{
 		this.setRegistryName(name);
 		this.setUnlocalizedName(name);
 	}
+	
+	
+	
+	
 }

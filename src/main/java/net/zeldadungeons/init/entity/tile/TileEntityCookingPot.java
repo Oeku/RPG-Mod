@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,6 +21,8 @@ import net.zeldadungeons.init.Itemizer;
 import net.zeldadungeons.init.blocks.BlockCookingPot;
 import net.zeldadungeons.init.cooking.CookingEffectAmpl;
 import net.zeldadungeons.init.cooking.CookingManager;
+import net.zeldadungeons.init.cooking.CookingMeal;
+import net.zeldadungeons.init.cooking.ECookingEffect;
 import net.zeldadungeons.init.cooking.ICookingIngredient;
 import net.zeldadungeons.init.cooking.IngredientData;
 import net.zeldadungeons.init.items.ItemModFood;
@@ -46,12 +49,20 @@ public class TileEntityCookingPot extends TileEntity implements ITickable {
     private int cookingTime;
     /** how long this pot needs to cook before getting a meal **/
     private int cookingTimeSave;
+    /** The current Cooking Meal. **/
+    private CookingMeal meal;
+    private ItemStack stack;
 
     public TileEntityCookingPot(int capacity, int cookingTime) {
 	this.capacity = capacity;
 	this.cookingTime = cookingTime;
 	this.cookingTimeSave = cookingTime;
 	this.ingredientList = NonNullList.<ItemStack>create();
+	Log.logInt(1);
+
+    }
+
+    public TileEntityCookingPot() {
 
     }
 
@@ -60,14 +71,13 @@ public class TileEntityCookingPot extends TileEntity implements ITickable {
      */
     @Override
     public void update() {
-	if (world.isRemote) return;
 	reduceFireTime();
 	startCooking();
-	if (cooking){
+	if (cooking) {
 	    handleCooking();
 	    terminateCooking();
 	}
-	else if(!this.isPotFull())this.addPotentialIngredients();
+	else if (!this.isPotFull()) this.addPotentialIngredients();
 	this.updateBlockState();
 	this.spawnParticles();
     }
@@ -80,8 +90,9 @@ public class TileEntityCookingPot extends TileEntity implements ITickable {
      * Called to initiate the cooking process.
      */
     public void startCooking() {
-	if (!this.cooking && this.isPotFull() && this.fireTime >= cookingTime) {
+	if (!this.cooking && this.isPotFull() && this.fireTime >= cookingTimeSave) {
 	    this.cooking = true;
+	    if (cookingTime == 0) cookingTime = this.cookingTimeSave;
 	}
     }
 
@@ -94,38 +105,41 @@ public class TileEntityCookingPot extends TileEntity implements ITickable {
 	    this.effectlist = new ArrayList<CookingEffectAmpl>();
 	    this.addEffects();
 	}
-	else if(this.cookingTime == 5){
-	    //returns a combined, sorted List of the current effectlist.
+	else if (this.cookingTime == 5) {
+	    // returns a combined, sorted List of the current effectlist.
 	    this.effectlist = CookingManager.combineEffects(this.effectlist);
 	}
-	else if(this.cookingTime == 1){
-	    ItemModFood stack = CookingManager.processCooking(this.ingredientList,  this.effectlist, 3);
-	    EntityItem entity = new EntityItem(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), new ItemStack(stack));
+	else if (this.cookingTime == 3) {
+	    this.stack = new ItemStack(Itemizer.MEAL);
+	    this.meal = CookingManager.processCooking(this.ingredientList, stack);
+	}
+	else if (this.cookingTime == 1) {
+	    this.meal.areItemsValid(ingredientList);
+	    CookingManager.updateItemCookingCap(stack, this.meal, this.effectlist, 3);
+	    EntityItem entity = new EntityItem(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), stack);
 	    this.world.spawnEntity(entity);
 	    entity.motionX = Math.random();
 	    entity.motionY = Math.random();
 	    entity.motionZ = Math.random();
-	    Log.getLogger().info(stack);
-	}
-    }
-    
-    /**
-     * Checks if the cooking process needs to be stopped.
-     * If so, resets the process.
-     */
-    public void terminateCooking(){
-	if(this.fireTime == 0){
-	    this.cooking = false;
-	    this.cookingTime = 1000;
-	}
-	else if(this.cookingTime == 0){
-	    this.cooking = false;
-	    this.cookingTime = 1000;
 	}
     }
 
     /**
-     * Adds EffectList of all ItemStacks, to make evaluation of Item more performant.
+     * Checks if the cooking process needs to be stopped. If so, resets the
+     * process.
+     */
+    public void terminateCooking() {
+	if (this.fireTime == 0) {
+	    this.cooking = false;
+	}
+	else if (this.cookingTime == 0) {
+	    this.cooking = false;
+	}
+    }
+
+    /**
+     * Adds EffectList of all ItemStacks, to make evaluation of Item more
+     * performant.
      */
     public void addEffects() {
 	for (ItemStack it : this.ingredientList) {
@@ -133,12 +147,10 @@ public class TileEntityCookingPot extends TileEntity implements ITickable {
 		IngredientData d = (IngredientData) ((ICookingIngredient) it.getItem()).getIngredient().getEffectList();
 		this.effectlist.addAll(d.getEffectList());
 	    }
-	    else if(it.hasCapability(CapabilityCookingData.COOKING, CapabilityCookingData.DEFAULT_FACING)){
-		this.effectlist.addAll(it.getCapability(CapabilityCookingData.COOKING, CapabilityCookingData.DEFAULT_FACING).getData().getEffectList());
-	    }
+	    else this.effectlist.add(new CookingEffectAmpl(ECookingEffect.NEUTRAL, 10));
 	}
     }
-    
+
     /**
      * Adds ingredients from EntityItems in the world to this pot.
      */
@@ -184,11 +196,11 @@ public class TileEntityCookingPot extends TileEntity implements ITickable {
     }
 
     public boolean isPotFull() {
-	return this.ingredientList.size() >= capacity;
-    }
-
-    public void setCooking(boolean b) {
-	this.cooking = b;
+	int i = 0;
+	for (ItemStack stack : this.ingredientList) {
+	    i += stack.getCount();
+	}
+	return i >= capacity;
     }
 
     public void logThings() {
@@ -217,12 +229,14 @@ public class TileEntityCookingPot extends TileEntity implements ITickable {
 		d0 = Math.random() * 0.6D + 0.2D;
 		d1 = Math.random() * 0.1D + 0.55D;
 		d2 = Math.random() * 0.6D + 0.2D;
-		PacketUtil.spawnParticle((WorldServer) world, EnumParticleTypes.WATER_BUBBLE, this.pos.getX() + d0, this.pos.getY() + d1, this.pos.getZ() + d2, 1, 0D, 0);
+		PacketUtil.spawnParticle((WorldServer) world, EnumParticleTypes.WATER_SPLASH, this.pos.getX() + d0, this.pos.getY() + d1, this.pos.getZ() + d2, 1, 0D, 0);
 	    }
 	}
     }
 
     public void updateBlockState() {
+	if(world.isRemote)return;
+	if (this.cooking != this.world.getBlockState(this.pos).getValue(BlockCookingPot.COOKING)) BlockCookingPot.setState(this, this.pos, this.world);
 	this.world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockCookingPot.COOKING, this.cooking));
     }
 
@@ -243,4 +257,9 @@ public class TileEntityCookingPot extends TileEntity implements ITickable {
 	this.cookingTime = data[1];
 	this.cookingTimeSave = data[3];
     }
+
+    public boolean isCooking() {
+	return this.cooking;
+    }
+
 }

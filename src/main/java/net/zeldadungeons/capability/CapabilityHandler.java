@@ -1,32 +1,18 @@
 package net.zeldadungeons.capability;
 
-import java.util.Random;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.zeldadungeons.ZeldaDungeons;
 import net.zeldadungeons.capability.cookingdata.CapabilityCookingData;
 import net.zeldadungeons.capability.cookingdata.CookingData;
-import net.zeldadungeons.capability.entitylevels.EntityLevelsContainer;
 import net.zeldadungeons.capability.playerlevels.CapabilityPlayerLevels;
 import net.zeldadungeons.capability.playerlevels.IPlayerLevels;
 import net.zeldadungeons.capability.playerlevels.PlayerLevels;
-import net.zeldadungeons.init.cooking.ECookingEffect;
-import net.zeldadungeons.init.cooking.ICookingIngredient;
-import net.zeldadungeons.init.cooking.IngredientData;
-import net.zeldadungeons.init.entity.ICustomEntity;
-import net.zeldadungeons.init.entity.living.overworld.EntityGorok;
-import net.zeldadungeons.init.entity.living.overworld.EntityLandamus;
-import net.zeldadungeons.init.entity.living.overworld.EntityProoper;
-import net.zeldadungeons.init.entity.tile.TileEntityCookingPot;
+import net.zeldadungeons.init.Itemizer;
+import net.zeldadungeons.init.items.ItemModFood;
 import net.zeldadungeons.skill.SkillCombat;
 import net.zeldadungeons.skill.SkillHealth;
 import net.zeldadungeons.skill.SkillStamina;
@@ -37,9 +23,9 @@ public class CapabilityHandler {
 
     @SubscribeEvent
     public void attachCookingCapability(AttachCapabilitiesEvent<ItemStack> event){
-	if(!(event.getObject().getItem() instanceof ICookingIngredient)){
-	    final CookingData cookingdata = new CookingData(event.getObject().getItem());
-	    event.addCapability(CapabilityCookingData.ID, new CapabilityProvider<>(CapabilityCookingData.COOKING, CapabilityCookingData.DEFAULT_FACING, cookingdata));
+	if(event.getObject().getItem() == Itemizer.MEAL){
+	    final CookingData cookingdata = new CookingData();
+	    event.addCapability(CapabilityCookingData.ID, new CapabilityProviderSerializable<>(CapabilityCookingData.COOKING, CapabilityCookingData.DEFAULT_FACING, cookingdata));
 	}
     }
     

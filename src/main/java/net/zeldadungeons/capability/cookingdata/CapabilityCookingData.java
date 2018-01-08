@@ -28,16 +28,20 @@ public class CapabilityCookingData {
 
 	    @Override
 	    public NBTBase writeNBT(Capability<ICookingData> capability, ICookingData instance, EnumFacing side) {
+		CookingDataContainer c = instance.getContainer();
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("item", Item.REGISTRY.getNameForObject(instance.getItem()).toString());
+		int[] data = {c.getHealAmount(), c.getSatAmount(), c.getStamAmount()};
+		compound.setIntArray("data", data);
 		return compound;
 	    }
 
 	    @Override
 	    public void readNBT(Capability<ICookingData> capability, ICookingData instance, EnumFacing side, NBTBase nbt) {
 		NBTTagCompound compound = ((NBTTagCompound) nbt);
-		Item item = Item.REGISTRY.getObject(new ResourceLocation(compound.getString("item")));
-		instance.setItem(item);
+		int[] data = compound.getIntArray("data");
+		CookingDataContainer c = new CookingDataContainer(data[0], data[1], data[2]);
+		instance.setContainer(c);
+		
 	    }
 	}, () -> new CookingData());
     }

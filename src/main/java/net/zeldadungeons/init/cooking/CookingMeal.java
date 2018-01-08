@@ -18,6 +18,7 @@ public class CookingMeal extends IForgeRegistryEntry.Impl<CookingMeal> {
     /** The amount of Items for each ingredient that are allowed. **/
     private int[][] value;
     private String displayName;
+    /**Base Values to modify**/
     private int saturation;
     private int health;
     private int stamina;
