@@ -15,6 +15,5 @@ public class BioMedievalHills extends Biome{
 
     @Override
     public void decorate(World worldIn, Random rand, BlockPos pos) {
-	Log.getLogger().info(pos.getX()+" "+ pos.getY()+ " "+ pos.getZ());
     }
 }

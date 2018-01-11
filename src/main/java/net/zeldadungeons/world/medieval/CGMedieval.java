@@ -34,6 +34,7 @@ import net.minecraft.world.gen.structure.MapGenStronghold;
 import net.minecraft.world.gen.structure.MapGenVillage;
 import net.minecraft.world.gen.structure.StructureOceanMonument;
 import net.minecraft.world.gen.structure.WoodlandMansion;
+import net.zeldadungeons.util.Log;
 
 public class CGMedieval implements IChunkGenerator {
     protected static final IBlockState STONE = Blocks.STONE.getDefaultState();
@@ -192,50 +193,38 @@ public class CGMedieval implements IChunkGenerator {
      * Generates the chunk at the specified position, from scratch
      */
     public Chunk generateChunk(int x, int z) {
+	long begin = System.nanoTime()/100;
 	this.rand.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
 	ChunkPrimer chunkprimer = new ChunkPrimer();
 	this.setBlocksInChunk(x, z, chunkprimer);
+	long setBlocks = System.nanoTime()/100;
 	this.biomesForGeneration = this.world.getBiomeProvider().getBiomes(this.biomesForGeneration, x * 16, z * 16, 16, 16);
 	this.replaceBiomeBlocks(x, z, chunkprimer, this.biomesForGeneration);
-
-	if (this.settings.useCaves) {
-	    this.caveGenerator.generate(this.world, x, z, chunkprimer);
-	}
-
-	if (this.settings.useRavines) {
-	    this.ravineGenerator.generate(this.world, x, z, chunkprimer);
-	}
-
-	if (this.mapFeaturesEnabled) {
-	    if (this.settings.useMineShafts) {
-		this.mineshaftGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-
-	    if (this.settings.useVillages) {
-		this.villageGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-
-	    if (this.settings.useStrongholds) {
-		this.strongholdGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-
-	    if (this.settings.useTemples) {
-		this.scatteredFeatureGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-
-	    if (this.settings.useMonuments) {
-		this.oceanMonumentGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-	}
-
+	long setBiome = System.nanoTime()/100;
+	long genStructures = System.nanoTime()/100;
 	Chunk chunk = new Chunk(this.world, chunkprimer, x, z);
+	long lg1 = System.nanoTime()/100;
 	byte[] abyte = chunk.getBiomeArray();
-
+	long lg2 = System.nanoTime()/100;
 	for (int i = 0; i < abyte.length; ++i) {
 	    abyte[i] = (byte) Biome.getIdForBiome(this.biomesForGeneration[i]);
 	}
-
+	long lg3 = System.nanoTime()/100;
 	chunk.generateSkylightMap();
+	long genLight = System.nanoTime()/100;
+	Log.getLogger().info("Generated Chunk "+x+" "+z);
+	Log.getLogger().info("Setting Blocks took "+(setBlocks-begin));
+	Log.getLogger().info("Replacing Biome Blocks took "+(setBiome-setBlocks));
+	Log.getLogger().info("Generating Structures took "+(genStructures-setBiome));
+	Log.getLogger().info("Generating Lightmap and getting Biomes for gen took "+(genLight-genStructures));
+	Log.getLogger().info("Generation took "+(genLight-begin));
+	Log.logString(" ");
+	Log.logString("Exact Logging");
+	Log.logString("lg1: "+(lg1-genStructures));
+	Log.logString("lg2: "+(lg2-lg1));
+	Log.logString("lg3: "+(lg3-lg2));
+	Log.logString("lg4: "+(genLight-lg3));
+
 	return chunk;
     }
 
