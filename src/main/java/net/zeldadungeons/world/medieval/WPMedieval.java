@@ -1,5 +1,6 @@
 package net.zeldadungeons.world.medieval;
 
+import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
@@ -9,59 +10,51 @@ import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.zeldadungeons.init.Generizer;
+import net.zeldadungeons.world.BiomeProviderCustom;
 
-public class WPMedieval extends WorldProvider{
+public class WPMedieval extends WorldProvider {
 
     @Override
     public IChunkGenerator createChunkGenerator() {
-        return new CGMedieval(this.world, this.getSeed(), false, "");
+	return new CGMedieval(this.world, this.getSeed(), false, "");
     }
 
     @Override
     public DimensionType getDimensionType() {
-	return DimensionType.OVERWORLD;
+	return DimensionType.byName("Medieval");
     }
-    
+
     @Override
     public String getSaveFolder() {
-        return "DIM-Medieval";
+	return "DIM-Medieval";
     }
-    
+
     @Override
     public float getCloudHeight() {
-        return 128F;
+	return 128F;
     }
-    
+
     @Override
     public boolean isNether() {
-        return false;
+	return false;
     }
-    @Override
-    public int getHeight() {
-        return super.getHeight();
-    }
+
     @Override
     public BiomeProvider getBiomeProvider() {
-        return WorldType.DEFAULT.getBiomeProvider(this.world);
-    }    
-    
-    @Override
-    public boolean canDoLightning(Chunk chunk) {
-        return super.canDoLightning(chunk);
+	return this.biomeProvider;
     }
-    
-    public boolean canDropChunk(int x, int z)
-    {
-        return !this.world.isSpawnChunk(x, z) || !this.world.provider.getDimensionType().shouldLoadSpawn();
+
+    public boolean canDropChunk(int x, int z) {
+	return !this.world.isSpawnChunk(x, z) || !this.world.provider.getDimensionType().shouldLoadSpawn();
     }
-    
+
     @Override
     protected void init() {
-	this.biomeProvider = new BiomeProviderSingle(Generizer.MEDIEVAL_HILLS);
+	this.biomeProvider = new BiomeProvider(this.world.getWorldInfo());
     }
-    
+
     @Override
-    protected void generateLightBrightnessTable() {
-        super.generateLightBrightnessTable();
+    public boolean hasSkyLight() {
+	return true;
     }
 }

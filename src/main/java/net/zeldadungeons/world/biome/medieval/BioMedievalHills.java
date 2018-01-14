@@ -9,8 +9,8 @@ import net.zeldadungeons.util.Log;
 
 public class BioMedievalHills extends Biome{
 
-    public BioMedievalHills() {
-	super(new Biome.BiomeProperties("Medieval Hills").setBaseHeight(0.1F).setHeightVariation(0F).setTemperature(0.8F).setRainfall(0.2F));
+    public BioMedievalHills(Biome.BiomeProperties prop) {
+	super(prop);
     }
 
     @Override

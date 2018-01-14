@@ -43,13 +43,6 @@ public class ZeldaDungeons {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 	/** Testing Area **/
-	NoiseGeneratorOctaves simple = new NoiseGeneratorOctaves(this.RANDOM, 1);
-	double[] array = null;
-	array = simple.generateNoiseOctaves(array, 5, 5, 5, 5, 1D, 1D, 1D);
-	for(int i = 0; i< array.length; i++){
-	    Log.getLogger().info(array[i]);
-	}
-	
 	/** End **/
 	Log.logString("PreInitialization - Arpg");
 	CapabilityHandler.INSTANCE.registerCapabilities();
