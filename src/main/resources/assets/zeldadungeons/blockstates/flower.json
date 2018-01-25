@@ -1,0 +1,16 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "type": {
+            "red_columbine": {
+                "model": "zeldadungeons:red_columbine"
+            },
+            "pink_columbine": {
+                "model": "zeldadungeons:pink_columbine"
+            },
+            "cyan_columbine": {
+                "model": "zeldadungeons:cyan_columbine"
+            }
+        }
+    }
+}

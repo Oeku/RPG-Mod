@@ -44,7 +44,11 @@ public class Itemizer {
     public static ItemResource TOPAZ;
     public static ItemResource LUMINOUS_STONE;
     public static ItemResource SALT;
-
+    public static ItemResource COPPER;
+    public static ItemResource TIN;
+    public static ItemResource BRONZE;
+    public static ItemResource SILVER;
+    
     public static ItemModPickaxe AMBER_PICKAXE;
     public static ItemModAxe AMBER_AXE;
     public static ItemModSpade AMBER_SHOVEL;
@@ -81,7 +85,11 @@ public class Itemizer {
 	TOPAZ = new ItemResource("topaz");
 	LUMINOUS_STONE = new ItemResource("luminous_stone");
 	SALT = new ItemResource("salt");
-
+	COPPER = new ItemResource("copper");
+	SILVER = new ItemResource("silver");
+	TIN = new ItemResource("tin");
+	BRONZE = new ItemResource("bronze");
+	
 	AMBER_PICKAXE = new ItemModPickaxe("amber_pickaxe", ToolMaterials.MATERIAL_AMBER);
 	AMBER_AXE = new ItemModAxe("amber_axe", ToolMaterials.MATERIAL_AMBER, 0F, 15F);
 	AMBER_SHOVEL = new ItemModSpade("amber_shovel", ToolMaterials.MATERIAL_AMBER);

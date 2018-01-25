@@ -50,7 +50,7 @@ public class WPMedieval extends WorldProvider {
 
     @Override
     protected void init() {
-	this.biomeProvider = new BiomeProvider(this.world.getWorldInfo());
+	this.biomeProvider = new BPMedieval(this.world);
     }
 
     @Override

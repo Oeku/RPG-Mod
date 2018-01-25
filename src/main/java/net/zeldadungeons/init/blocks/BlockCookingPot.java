@@ -77,10 +77,6 @@ public class BlockCookingPot extends Block{
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 	if(worldIn.isRemote)return false;
-	Log.getLogger().info(BiomeProvider.allowedBiomes.contains(Generizer.MEDIEVAL_HILLS));
-	List<Biome> list = Lists.newArrayList();
-	list.add(Generizer.MEDIEVAL_HILLS);
-	BlockPos pos1 = worldIn.getBiomeProvider().findBiomePosition(pos.getX(), pos.getZ(), 10000, list, worldIn.rand);
 	Log.getLogger().info(pos.getX()+"  "+pos.getY()+ " " + pos.getZ());
 	return true;
     }

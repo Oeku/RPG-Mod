@@ -129,6 +129,7 @@ public class SkillStamina extends Skill {
     }
     
     public void updateMode(){
+	if(player == null)return;
 	if(player.motionX == 0 && player.motionY <= 0 && player.motionZ == 0){
 	    this.modeIn = EnumMode.STANDING;
 	}

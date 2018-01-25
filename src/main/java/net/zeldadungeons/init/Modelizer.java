@@ -28,6 +28,11 @@ public class Modelizer {
 		registerItemModel(Itemizer.AMBER);
 		registerItemModel(Itemizer.LUMINOUS_STONE);
 		registerItemModel(Itemizer.SALT);
+		registerItemModel(Itemizer.SILVER);
+		registerItemModel(Itemizer.COPPER);
+		registerItemModel(Itemizer.TIN);
+		registerItemModel(Itemizer.BRONZE);
+
 		
 		registerItemModel(Itemizer.AMBER_PICKAXE);
 		registerItemModel(Itemizer.AMBER_AXE);
@@ -59,6 +64,13 @@ public class Modelizer {
 		registerBlockItemModel(Blockizer.SALT_ORE.getDefaultState());
 		registerBlockItemModel(Blockizer.TOPAZ_ORE.getDefaultState());
 		registerBlockItemModel(Blockizer.SAPPHIRE_ORE.getDefaultState());
+		registerBlockItemModel(Blockizer.SILVER_ORE.getDefaultState());
+		registerBlockItemModel(Blockizer.COPPER_ORE.getDefaultState());
+		registerBlockItemModel(Blockizer.TIN_ORE.getDefaultState());
+		registerBlockItemModel(Blockizer.GOLD_ORE.getDefaultState());
+		registerBlockItemModel(Blockizer.MEDIEVAL_STONE.getDefaultState());
+		registerBlockItemModel(Blockizer.FLOWER.getDefaultState());
+		
 		registerBlockItemModel(Blockizer.AMBER_BLOCK.getDefaultState());
 		
 		registerBlockItemModel(Blockizer.COOKING_POT.getDefaultState());

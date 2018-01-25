@@ -3,6 +3,7 @@ package net.zeldadungeons;
 import java.util.Random;
 
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
+import net.minecraft.world.gen.NoiseGeneratorSimplex;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -43,6 +44,7 @@ public class ZeldaDungeons {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 	/** Testing Area **/
+
 	/** End **/
 	Log.logString("PreInitialization - Arpg");
 	CapabilityHandler.INSTANCE.registerCapabilities();

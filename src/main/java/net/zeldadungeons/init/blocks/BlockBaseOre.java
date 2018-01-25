@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.block.BlockOre;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -32,6 +33,18 @@ public class BlockBaseOre extends BlockOre{
         {
         	return Itemizer.SALT;
         }
+        else if(this == Blockizer.GOLD_ORE){
+            return Items.GOLD_NUGGET;
+        }
+        else if(this == Blockizer.SILVER_ORE){
+            return Itemizer.SILVER;
+        }
+        else if(this == Blockizer.COPPER_ORE){
+            return Itemizer.COPPER;
+        }
+        else if(this == Blockizer.TIN_ORE){
+            return Itemizer.TIN;
+        }
         else return Item.getItemFromBlock(state.getBlock());
     }
 	
@@ -41,9 +54,9 @@ public class BlockBaseOre extends BlockOre{
     @Override
     public int quantityDropped(Random random)
     {
-    	if(this == Blockizer.LUMINOUS_ORE || this == Blockizer.SALT_ORE)return random.nextInt(1)+1;
+	if(this == Blockizer.GOLD_ORE)return random.nextInt(2)+6;
+	else if(this == Blockizer.LUMINOUS_ORE || this == Blockizer.SALT_ORE)return random.nextInt(1)+1;
     	else return 1;
-        
     }
 
     @Override

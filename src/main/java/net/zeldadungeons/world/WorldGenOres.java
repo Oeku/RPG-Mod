@@ -11,6 +11,7 @@ import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.zeldadungeons.init.Blockizer;
+import net.zeldadungeons.init.Dimensionizer;
 
 public class WorldGenOres implements IWorldGenerator{
 
@@ -18,8 +19,10 @@ public class WorldGenOres implements IWorldGenerator{
 	private final CustomGenMinable oreGenSalt;
 	private final CustomGenMinable oreGenLuminous;
 	private final CustomGenMinable oreGenTopaz;
-
-
+	private final CustomGenMinable oreGenSilver;
+	private final CustomGenMinable oreGenCopper;
+	private final CustomGenMinable oreGenTin;
+	private final CustomGenMinable oreGenGold;
 	
 	public WorldGenOres()
 	{
@@ -27,7 +30,10 @@ public class WorldGenOres implements IWorldGenerator{
 		this.oreGenSalt = new CustomGenMinable(Blockizer.SALT_ORE.getDefaultState(), 10, BlockMatcher.forBlock(Blocks.STONE));
 		this.oreGenLuminous = new CustomGenMinable(Blockizer.LUMINOUS_ORE.getDefaultState(), 8, BlockMatcher.forBlock(Blocks.STONE));
 		this.oreGenTopaz = new CustomGenMinable(Blockizer.TOPAZ_ORE.getDefaultState(), 6, BlockMatcher.forBlock(Blocks.STONE));
-
+		this.oreGenCopper = new CustomGenMinable(Blockizer.COPPER_ORE.getDefaultState(), 12, BlockMatcher.forBlock(Blockizer.MEDIEVAL_STONE));
+		this.oreGenSilver = new CustomGenMinable(Blockizer.SILVER_ORE.getDefaultState(), 5, BlockMatcher.forBlock(Blockizer.MEDIEVAL_STONE));
+		this.oreGenTin = new CustomGenMinable(Blockizer.TIN_ORE.getDefaultState(), 2, BlockMatcher.forBlock(Blockizer.MEDIEVAL_STONE));
+		this.oreGenGold = new CustomGenMinable(Blockizer.GOLD_ORE.getDefaultState(), 10, BlockMatcher.forBlock(Blockizer.MEDIEVAL_STONE));
 	}
 	
 	@Override
@@ -42,7 +48,13 @@ public class WorldGenOres implements IWorldGenerator{
 				genOre(world, random, 4, oreGenTopaz, 5, 40, chunkPos);
 				//oreGenLuminous.generate(world, random, chunkPos.add(random.nextInt(16), random.nextInt(70)+20, random.nextInt(16)));
 		case NETHER:
-		case THE_END:
+		case THE_END:		   
+		}
+		if(world.provider.getDimension() == Dimensionizer.medievalID){
+		    genOre(world, random, 3, oreGenCopper, 50, 180, chunkPos);
+		    genOre(world, random, 15, oreGenTin, 50, 180, chunkPos);
+		    genOre(world, random, 4, oreGenSilver, 0, 50, chunkPos);
+		    genOre(world, random, 4, oreGenGold, 0, 40, chunkPos);
 		}
 	}
 	
