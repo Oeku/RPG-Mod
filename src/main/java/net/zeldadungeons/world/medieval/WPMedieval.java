@@ -31,7 +31,7 @@ public class WPMedieval extends WorldProvider {
 
     @Override
     public float getCloudHeight() {
-	return 128F;
+	return 170F;
     }
 
     @Override

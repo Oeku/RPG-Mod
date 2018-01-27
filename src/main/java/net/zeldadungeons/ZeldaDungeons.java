@@ -44,6 +44,10 @@ public class ZeldaDungeons {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 	/** Testing Area **/
+	Log.logInt(RANDOM.nextInt());
+	Log.logInt(RANDOM.nextInt());
+	Log.logInt(RANDOM.nextInt());
+	Log.logInt(RANDOM.nextInt());
 
 	/** End **/
 	Log.logString("PreInitialization - Arpg");

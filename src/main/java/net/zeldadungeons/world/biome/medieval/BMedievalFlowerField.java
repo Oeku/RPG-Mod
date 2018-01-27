@@ -48,7 +48,7 @@ public class BMedievalFlowerField extends BMedievalHills {
 	    else if (i == 1) flowerState = CYAN_COLUMBINE;
 	    else flowerState = PINK_COLUMBINE;
 	    worldIn.setBlockState(pos.up(), flowerState);
-	    Log.getLogger().info("generated flower at"+ pos.getX()+" "+ pos.getZ());
+	    //Log.getLogger().info("generated flower at"+ pos.getX()+" "+ pos.getZ());
 	}
 	pos.down();
     }

@@ -16,18 +16,18 @@ public class CustomGenMinable extends WorldGenerator
     private final IBlockState oreBlock;
     /** The number of blocks to generate. */
     private final int numberOfBlocks;
-    private final Predicate<IBlockState> predicate;
+    private final IBlockState replaceBlock;
 
     public CustomGenMinable(IBlockState state, int blockCount)
     {
-        this(state, blockCount, new CustomGenMinable.StonePredicate());
+        this(state, blockCount, Blocks.STONE.getDefaultState());
     }
 
-    public CustomGenMinable(IBlockState state, int blockCount, Predicate<IBlockState> p_i45631_3_)
+    public CustomGenMinable(IBlockState state, int blockCount, final IBlockState replaceBlock)
     {
         this.oreBlock = state;
         this.numberOfBlocks = blockCount;
-        this.predicate = p_i45631_3_;
+        this.replaceBlock = replaceBlock;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CustomGenMinable extends WorldGenerator
                                     BlockPos blockpos = new BlockPos(l1, i2, j2);
 
                                     IBlockState state = worldIn.getBlockState(blockpos);
-                                    if (state.getBlock().isReplaceableOreGen(state, worldIn, blockpos, this.predicate))
+                                    if (state == this.replaceBlock)
                                     {
                                         worldIn.setBlockState(blockpos, this.oreBlock, 2);
                                         //if(worldIn.getBlockState(blockpos).getBlock() == Blockizer.SAPPHIRE_ORE)Log.getLogger().info("Minable "+oreBlock.getBlock().getRegistryName()+" "+blockpos.getX()+" "+blockpos.getY()+" "+blockpos.getZ());

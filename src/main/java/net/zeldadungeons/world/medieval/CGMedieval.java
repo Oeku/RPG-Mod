@@ -7,17 +7,14 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -31,15 +28,15 @@ import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
 import net.minecraft.world.gen.feature.WorldGenDungeons;
-import net.minecraft.world.gen.feature.WorldGenLakes;
-import net.minecraft.world.gen.layer.IntCache;
 import net.minecraft.world.gen.structure.MapGenMineshaft;
 import net.minecraft.world.gen.structure.MapGenScatteredFeature;
 import net.minecraft.world.gen.structure.MapGenStronghold;
 import net.minecraft.world.gen.structure.MapGenVillage;
 import net.minecraft.world.gen.structure.StructureOceanMonument;
+import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.zeldadungeons.init.Blockizer;
-import net.zeldadungeons.util.Log;
+import net.zeldadungeons.world.structure.FortressGenerator;
+import net.zeldadungeons.world.structure.MGMedievalVillage;
 
 public class CGMedieval implements IChunkGenerator {
     protected static final IBlockState STONE = Blockizer.MEDIEVAL_STONE.getDefaultState();
@@ -51,12 +48,6 @@ public class CGMedieval implements IChunkGenerator {
     public NoiseGeneratorOctaves scaleNoise;
     public NoiseGeneratorOctaves depthNoise;
     public NoiseGeneratorOctaves forestNoise;
-
-    private NoiseGeneratorOctaves customNoise;
-
-    private NoiseGeneratorSimplex heightNoise;
-    
-    private NoiseGeneratorOctaves customNoise2;
 
     private final World world;
     private final boolean mapFeaturesEnabled;
@@ -79,10 +70,27 @@ public class CGMedieval implements IChunkGenerator {
     double[] maxLimitRegion;
     double[] depthRegion;
 
+    private NoiseGeneratorOctaves customNoise;
+
+    private NoiseGeneratorSimplex heightNoise;
+
+    private NoiseGeneratorOctaves customNoise2;
+
+    private FortressGenerator[] fortressGens = new FortressGenerator[1];
+
     private double[] heightGen;
+
+    private MGMedievalVillage villageGen2 = new MGMedievalVillage(this);
 
     public CGMedieval(World worldIn, long seed, boolean mapFeaturesEnabledIn, String generatorOptions) {
 	{
+	    WorldServer server;
+	    TemplateManager tm;
+	    if (worldIn instanceof WorldServer) {
+		server = (WorldServer) worldIn;
+		tm = server.getStructureTemplateManager();
+
+	    }
 	    caveGenerator = net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(caveGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.CAVE);
 	    strongholdGenerator = (MapGenStronghold) net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(strongholdGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.STRONGHOLD);
 	    villageGenerator = (MapGenVillage) net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(villageGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.VILLAGE);
@@ -105,7 +113,7 @@ public class CGMedieval implements IChunkGenerator {
 
 	this.customNoise = new NoiseGeneratorOctaves(this.rand, 7);
 	customNoise2 = new NoiseGeneratorOctaves(this.rand, 1);
-	
+
 	this.heightNoise = new NoiseGeneratorSimplex(this.rand);
 
 	this.heightMap = new double[825];
@@ -347,7 +355,7 @@ public class CGMedieval implements IChunkGenerator {
 		++j;
 		double d8 = (double) f3;
 		double d9 = (double) f2;
-		d8*=this.heightGen[j-1]*0.0001D;
+		d8 *= this.heightGen[j - 1] * 0.0001D;
 		d8 = d8 + d7 * 0.2D;
 		d8 = d8 * (double) this.settings.baseSize / 8.0D;
 		double d0 = (double) this.settings.baseSize + d8 * 4.0D;
@@ -416,6 +424,7 @@ public class CGMedieval implements IChunkGenerator {
 	    if (this.settings.useMonuments) {
 		this.oceanMonumentGenerator.generateStructure(this.world, this.rand, chunkpos);
 	    }
+	    this.villageGen2.generateStructure(this.world, this.rand, chunkpos);
 	}
 
 	if (this.settings.useDungeons) if (net.minecraftforge.event.terraingen.TerrainGen.populate(this, this.world, this.rand, x, z, flag, net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.DUNGEON)) {
@@ -447,7 +456,7 @@ public class CGMedieval implements IChunkGenerator {
 		    }
 		}
 	    }
-	} // Forge: End ICE
+	}
 
 	net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(false, this, this.world, this.rand, x, z, flag);
 
@@ -535,6 +544,10 @@ public class CGMedieval implements IChunkGenerator {
      */
     public void recreateStructures(Chunk chunkIn, int x, int z) {
 	if (this.mapFeaturesEnabled) {
+	    for (int i = 0; i < this.fortressGens.length; i++) {
+		// if(!this.world.isRemote)fortressGens[i].generate(this.rand,
+		// x, z, this.world, this);
+	    }
 	    if (this.settings.useMineShafts) {
 		this.mineshaftGenerator.generate(this.world, x, z, (ChunkPrimer) null);
 	    }
@@ -554,6 +567,8 @@ public class CGMedieval implements IChunkGenerator {
 	    if (this.settings.useMonuments) {
 		this.oceanMonumentGenerator.generate(this.world, x, z, (ChunkPrimer) null);
 	    }
+	    
+	    this.villageGen2.generate(this.world, x, z, (ChunkPrimer)null);
 	}
     }
 

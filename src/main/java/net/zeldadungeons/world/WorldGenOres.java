@@ -26,14 +26,14 @@ public class WorldGenOres implements IWorldGenerator{
 	
 	public WorldGenOres()
 	{
-		this.oreGenSapphire = new CustomGenMinable(Blockizer.SAPPHIRE_ORE.getDefaultState(), 4, BlockMatcher.forBlock(Blocks.STONE));
-		this.oreGenSalt = new CustomGenMinable(Blockizer.SALT_ORE.getDefaultState(), 10, BlockMatcher.forBlock(Blocks.STONE));
-		this.oreGenLuminous = new CustomGenMinable(Blockizer.LUMINOUS_ORE.getDefaultState(), 8, BlockMatcher.forBlock(Blocks.STONE));
-		this.oreGenTopaz = new CustomGenMinable(Blockizer.TOPAZ_ORE.getDefaultState(), 6, BlockMatcher.forBlock(Blocks.STONE));
-		this.oreGenCopper = new CustomGenMinable(Blockizer.COPPER_ORE.getDefaultState(), 12, BlockMatcher.forBlock(Blockizer.MEDIEVAL_STONE));
-		this.oreGenSilver = new CustomGenMinable(Blockizer.SILVER_ORE.getDefaultState(), 5, BlockMatcher.forBlock(Blockizer.MEDIEVAL_STONE));
-		this.oreGenTin = new CustomGenMinable(Blockizer.TIN_ORE.getDefaultState(), 2, BlockMatcher.forBlock(Blockizer.MEDIEVAL_STONE));
-		this.oreGenGold = new CustomGenMinable(Blockizer.GOLD_ORE.getDefaultState(), 10, BlockMatcher.forBlock(Blockizer.MEDIEVAL_STONE));
+		this.oreGenSapphire = new CustomGenMinable(Blockizer.SAPPHIRE_ORE.getDefaultState(), 4, Blocks.STONE.getDefaultState());
+		this.oreGenSalt = new CustomGenMinable(Blockizer.SALT_ORE.getDefaultState(), 10, Blocks.STONE.getDefaultState());
+		this.oreGenLuminous = new CustomGenMinable(Blockizer.LUMINOUS_ORE.getDefaultState(), 8, Blocks.STONE.getDefaultState());
+		this.oreGenTopaz = new CustomGenMinable(Blockizer.TOPAZ_ORE.getDefaultState(), 6, Blocks.STONE.getDefaultState());
+		this.oreGenCopper = new CustomGenMinable(Blockizer.COPPER_ORE.getDefaultState(), 12, Blockizer.MEDIEVAL_STONE.getDefaultState());
+		this.oreGenSilver = new CustomGenMinable(Blockizer.SILVER_ORE.getDefaultState(), 5, Blockizer.MEDIEVAL_STONE.getDefaultState());
+		this.oreGenTin = new CustomGenMinable(Blockizer.TIN_ORE.getDefaultState(), 2, Blockizer.MEDIEVAL_STONE.getDefaultState());
+		this.oreGenGold = new CustomGenMinable(Blockizer.GOLD_ORE.getDefaultState(), 10, Blockizer.MEDIEVAL_STONE.getDefaultState());
 	}
 	
 	@Override
@@ -46,7 +46,6 @@ public class WorldGenOres implements IWorldGenerator{
 				genOre(world, random, 10, oreGenSalt, 0, 160, chunkPos);
 				genOre(world, random, 6, oreGenLuminous, 30, 60, chunkPos);
 				genOre(world, random, 4, oreGenTopaz, 5, 40, chunkPos);
-				//oreGenLuminous.generate(world, random, chunkPos.add(random.nextInt(16), random.nextInt(70)+20, random.nextInt(16)));
 		case NETHER:
 		case THE_END:		   
 		}
