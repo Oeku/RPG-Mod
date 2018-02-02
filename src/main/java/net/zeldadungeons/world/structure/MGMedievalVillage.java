@@ -62,6 +62,8 @@ public class MGMedievalVillage extends MapGenStructure{
         {
             Random random = new Random((long)(chunkX + chunkZ * 10387313));
             Rotation rotation = Rotation.values()[random.nextInt(Rotation.values().length)];
+            /** get a random piece to start with**/
+            MGMedievalVillagePieces.getStartPiece(this);
             Log.getLogger().info("started structure at chunk "+chunkX+" "+chunkZ);
         }
 

@@ -40,10 +40,10 @@ public class Generizer {
     public static void registerWorldGenerators() {
 	GameRegistry.registerWorldGenerator(new WorldGenOres(), 1000);
 	GameRegistry.registerWorldGenerator(new WorldGenAmber(), 1000);
-	/*GameRegistry.registerWorldGenerator(new FortressGenerator(37, 30, 40, "Fortress1",
+	GameRegistry.registerWorldGenerator(new FortressGenerator(37, 30, 40, "Fortress1",
 		new FortressTemplate(0, 0, 0, new ResourceLocation(ZeldaDungeons.MODID, "fortress1_1")), 
 		new FortressTemplate(31, 0, 11, new ResourceLocation(ZeldaDungeons.MODID, "fortress1_2")),
-		new FortressTemplate(0, 0, 31, new ResourceLocation(ZeldaDungeons.MODID, "fortress1_3"))), 1);*/
+		new FortressTemplate(0, 0, 31, new ResourceLocation(ZeldaDungeons.MODID, "fortress1_3"))), 1);
 	registerStructures();
     }
 
