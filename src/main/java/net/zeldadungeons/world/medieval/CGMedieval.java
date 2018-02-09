@@ -1,5 +1,6 @@
 package net.zeldadungeons.world.medieval;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -29,14 +30,10 @@ import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
 import net.minecraft.world.gen.feature.WorldGenDungeons;
 import net.minecraft.world.gen.structure.MapGenMineshaft;
-import net.minecraft.world.gen.structure.MapGenScatteredFeature;
-import net.minecraft.world.gen.structure.MapGenStronghold;
-import net.minecraft.world.gen.structure.MapGenVillage;
-import net.minecraft.world.gen.structure.StructureOceanMonument;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.zeldadungeons.init.Blockizer;
 import net.zeldadungeons.world.structure.FortressGenerator;
-import net.zeldadungeons.world.structure.MGMedievalVillage;
+import net.zeldadungeons.world.structure.ModStructure;
 
 public class CGMedieval implements IChunkGenerator {
     protected static final IBlockState STONE = Blockizer.MEDIEVAL_STONE.getDefaultState();
@@ -58,19 +55,13 @@ public class CGMedieval implements IChunkGenerator {
     private IBlockState oceanBlock = Blocks.WATER.getDefaultState();
     private double[] depthBuffer = new double[256];
     private MapGenBase caveGenerator = new MapGenCaves();
-    private MapGenStronghold strongholdGenerator = new MapGenStronghold();
-    private MapGenVillage villageGenerator = new MapGenVillage();
     private MapGenMineshaft mineshaftGenerator = new MapGenMineshaft();
-    private MapGenScatteredFeature scatteredFeatureGenerator = new MapGenScatteredFeature();
     private MapGenBase ravineGenerator = new MapGenRavine();
-    private StructureOceanMonument oceanMonumentGenerator = new StructureOceanMonument();
     private Biome[] biomesForGeneration;
     double[] mainNoiseRegion;
     double[] minLimitRegion;
     double[] maxLimitRegion;
     double[] depthRegion;
-
-    private NoiseGeneratorOctaves customNoise;
 
     private NoiseGeneratorSimplex heightNoise;
 
@@ -79,8 +70,10 @@ public class CGMedieval implements IChunkGenerator {
     private FortressGenerator[] fortressGens = new FortressGenerator[1];
 
     private double[] heightGen;
-
-    private MGMedievalVillage villageGen2 = new MGMedievalVillage(this);
+    
+    private List structureList;
+    
+    
 
     public CGMedieval(World worldIn, long seed, boolean mapFeaturesEnabledIn, String generatorOptions) {
 	{
@@ -92,12 +85,9 @@ public class CGMedieval implements IChunkGenerator {
 
 	    }
 	    caveGenerator = net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(caveGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.CAVE);
-	    strongholdGenerator = (MapGenStronghold) net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(strongholdGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.STRONGHOLD);
-	    villageGenerator = (MapGenVillage) net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(villageGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.VILLAGE);
 	    mineshaftGenerator = (MapGenMineshaft) net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(mineshaftGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.MINESHAFT);
-	    scatteredFeatureGenerator = (MapGenScatteredFeature) net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(scatteredFeatureGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.SCATTERED_FEATURE);
 	    ravineGenerator = net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(ravineGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.RAVINE);
-	    oceanMonumentGenerator = (StructureOceanMonument) net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(oceanMonumentGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.OCEAN_MONUMENT);
+	    this.structureList = new ArrayList<ModStructure>();
 	}
 	this.world = worldIn;
 	this.mapFeaturesEnabled = mapFeaturesEnabledIn;
@@ -111,10 +101,7 @@ public class CGMedieval implements IChunkGenerator {
 	this.depthNoise = new NoiseGeneratorOctaves(this.rand, 16);
 	this.forestNoise = new NoiseGeneratorOctaves(this.rand, 8);
 
-	this.customNoise = new NoiseGeneratorOctaves(this.rand, 7);
 	customNoise2 = new NoiseGeneratorOctaves(this.rand, 1);
-
-	this.heightNoise = new NoiseGeneratorSimplex(this.rand);
 
 	this.heightMap = new double[825];
 	this.biomeWeights = new float[25];
@@ -242,22 +229,6 @@ public class CGMedieval implements IChunkGenerator {
 	    if (this.settings.useMineShafts) {
 		this.mineshaftGenerator.generate(this.world, x, z, chunkprimer);
 	    }
-
-	    if (this.settings.useVillages) {
-		this.villageGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-
-	    if (this.settings.useStrongholds) {
-		this.strongholdGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-
-	    if (this.settings.useTemples) {
-		this.scatteredFeatureGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-
-	    if (this.settings.useMonuments) {
-		this.oceanMonumentGenerator.generate(this.world, x, z, chunkprimer);
-	    }
 	}
 	long genStructures = System.nanoTime() / 100;
 	Chunk chunk = new Chunk(this.world, chunkprimer, x, z);
@@ -265,19 +236,6 @@ public class CGMedieval implements IChunkGenerator {
 	return chunk;
     }
 
-    private void generateHeightmap2(int x, int y, int z) {
-	int i = 0;
-	this.mainNoiseRegion = this.customNoise.generateNoiseOctaves(this.mainNoiseRegion, x, y, z, 5, 33, 5, this.settings.coordinateScale, this.settings.heightScale, this.settings.coordinateScale);
-	for (int k = 0; k < 5; ++k) {
-	    for (int l = 0; l < 5; ++l) {
-		for (int l1 = 0; l1 < 33; ++l1) {
-		    double d = this.mainNoiseRegion[i];
-		    this.heightMap[i] = d;
-		    ++i;
-		}
-	    }
-	}
-    }
 
     private void generateHeightmap(int x, int y, int z) {
 	this.heightGen = this.customNoise2.generateNoiseOctaves(this.depthRegion, x, z, 5, 5, (double) this.settings.depthNoiseScaleX, (double) this.settings.depthNoiseScaleZ, (double) this.settings.depthNoiseScaleExponent);
@@ -408,23 +366,6 @@ public class CGMedieval implements IChunkGenerator {
 	    if (this.settings.useMineShafts) {
 		this.mineshaftGenerator.generateStructure(this.world, this.rand, chunkpos);
 	    }
-
-	    if (this.settings.useVillages) {
-		flag = this.villageGenerator.generateStructure(this.world, this.rand, chunkpos);
-	    }
-
-	    if (this.settings.useStrongholds) {
-		this.strongholdGenerator.generateStructure(this.world, this.rand, chunkpos);
-	    }
-
-	    if (this.settings.useTemples) {
-		this.scatteredFeatureGenerator.generateStructure(this.world, this.rand, chunkpos);
-	    }
-
-	    if (this.settings.useMonuments) {
-		this.oceanMonumentGenerator.generateStructure(this.world, this.rand, chunkpos);
-	    }
-	    this.villageGen2.generateStructure(this.world, this.rand, chunkpos);
 	}
 
 	if (this.settings.useDungeons) if (net.minecraftforge.event.terraingen.TerrainGen.populate(this, this.world, this.rand, x, z, flag, net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.DUNGEON)) {
@@ -457,6 +398,11 @@ public class CGMedieval implements IChunkGenerator {
 		}
 	    }
 	}
+	
+	/** MOD STRUCTURE PART **/
+	for(ModStructure structure : this.structureList){
+	     structure.generate(x, z);  
+	}
 
 	net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(false, this, this.world, this.rand, x, z, flag);
 
@@ -470,70 +416,22 @@ public class CGMedieval implements IChunkGenerator {
     public boolean generateStructures(Chunk chunkIn, int x, int z) {
 	boolean flag = false;
 
-	if (this.settings.useMonuments && this.mapFeaturesEnabled && chunkIn.getInhabitedTime() < 3600L) {
-	    flag |= this.oceanMonumentGenerator.generateStructure(this.world, this.rand, new ChunkPos(x, z));
-	}
-
 	return flag;
     }
 
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
 	Biome biome = this.world.getBiome(pos);
 
-	if (this.mapFeaturesEnabled) {
-	    if (creatureType == EnumCreatureType.MONSTER && this.scatteredFeatureGenerator.isSwampHut(pos)) {
-		return this.scatteredFeatureGenerator.getScatteredFeatureSpawnList();
-	    }
-
-	    if (creatureType == EnumCreatureType.MONSTER && this.settings.useMonuments && this.oceanMonumentGenerator.isPositionInStructure(this.world, pos)) {
-		return this.oceanMonumentGenerator.getScatteredFeatureSpawnList();
-	    }
-	}
-
 	return biome.getSpawnableList(creatureType);
     }
 
     public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
-	if (!this.mapFeaturesEnabled) {
-	    return false;
-	}
-	else if ("Stronghold".equals(structureName) && this.strongholdGenerator != null) {
-	    return this.strongholdGenerator.isInsideStructure(pos);
-	}
-	else if ("Monument".equals(structureName) && this.oceanMonumentGenerator != null) {
-	    return this.oceanMonumentGenerator.isInsideStructure(pos);
-	}
-	else if ("Village".equals(structureName) && this.villageGenerator != null) {
-	    return this.villageGenerator.isInsideStructure(pos);
-	}
-	else if ("Mineshaft".equals(structureName) && this.mineshaftGenerator != null) {
-	    return this.mineshaftGenerator.isInsideStructure(pos);
-	}
-	else {
-	    return "Temple".equals(structureName) && this.scatteredFeatureGenerator != null ? this.scatteredFeatureGenerator.isInsideStructure(pos) : false;
-	}
+	 return false;
     }
 
     @Nullable
     public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) {
-	if (!this.mapFeaturesEnabled) {
-	    return null;
-	}
-	else if ("Stronghold".equals(structureName) && this.strongholdGenerator != null) {
-	    return this.strongholdGenerator.getNearestStructurePos(worldIn, position, findUnexplored);
-	}
-	else if ("Monument".equals(structureName) && this.oceanMonumentGenerator != null) {
-	    return this.oceanMonumentGenerator.getNearestStructurePos(worldIn, position, findUnexplored);
-	}
-	else if ("Village".equals(structureName) && this.villageGenerator != null) {
-	    return this.villageGenerator.getNearestStructurePos(worldIn, position, findUnexplored);
-	}
-	else if ("Mineshaft".equals(structureName) && this.mineshaftGenerator != null) {
-	    return this.mineshaftGenerator.getNearestStructurePos(worldIn, position, findUnexplored);
-	}
-	else {
-	    return "Temple".equals(structureName) && this.scatteredFeatureGenerator != null ? this.scatteredFeatureGenerator.getNearestStructurePos(worldIn, position, findUnexplored) : null;
-	}
+	return null;
     }
 
     /**
@@ -543,33 +441,7 @@ public class CGMedieval implements IChunkGenerator {
      * internal state needed by getPossibleCreatures.
      */
     public void recreateStructures(Chunk chunkIn, int x, int z) {
-	if (this.mapFeaturesEnabled) {
-	    for (int i = 0; i < this.fortressGens.length; i++) {
-		// if(!this.world.isRemote)fortressGens[i].generate(this.rand,
-		// x, z, this.world, this);
-	    }
-	    if (this.settings.useMineShafts) {
-		this.mineshaftGenerator.generate(this.world, x, z, (ChunkPrimer) null);
-	    }
 
-	    if (this.settings.useVillages) {
-		this.villageGenerator.generate(this.world, x, z, (ChunkPrimer) null);
-	    }
-
-	    if (this.settings.useStrongholds) {
-		this.strongholdGenerator.generate(this.world, x, z, (ChunkPrimer) null);
-	    }
-
-	    if (this.settings.useTemples) {
-		this.scatteredFeatureGenerator.generate(this.world, x, z, (ChunkPrimer) null);
-	    }
-
-	    if (this.settings.useMonuments) {
-		this.oceanMonumentGenerator.generate(this.world, x, z, (ChunkPrimer) null);
-	    }
-	    
-	    this.villageGen2.generate(this.world, x, z, (ChunkPrimer)null);
-	}
     }
 
     public void checkBiomes(Biome bin) {
