@@ -1,8 +1,8 @@
 package net.zeldadungeons.world.medieval;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.gen.ChunkProviderServer;
+import net.zeldadungeons.world.ICustomCG;
 import net.zeldadungeons.world.structure.ModStructure;
 import net.zeldadungeons.world.structure.ModStructureTypeMulti;
 
@@ -18,16 +18,13 @@ public class MSTMedievalVillage extends ModStructureTypeMulti{
 	this.setSizes(new int[]{200, 0, 200}, new int[]{30, 0, 30});
     }
     
-    @Override
     public void generate(ModStructure structure){
-	this.preGenerate(structure.getPositions());
+	ChunkProviderServer provider = structure.getProvider();
+	if(provider instanceof ICustomCG){
+	    //load all chunks that the structure is in
+	    for(ChunkPos pos : structure.getAffectedChunks()){
+		((ICustomCG) provider).chunkCache.put(pos.asLong(pos.x, pos.z), ((ICustomCG) provider).getChunkAt(pos.x, pos.z));
+	    }
+	}
     }
-    
-    public void preGenerate(BlockPos[] positions){
-    }
-    
-    public void raiseTerrainToHeight(int height, Chunk chunkIn){
-	
-    }
-    
 }

@@ -1,5 +1,7 @@
 package net.zeldadungeons.world.structure;
 
+import java.util.Random;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.IChunkGenerator;
 
@@ -46,7 +48,7 @@ public class ModStructureType {
      * @param chunkZ
      * @return The ModStructure, if a structure was created in this chunk. Else null !!! Add != null check in CG !!!.
      */
-    public ModStructure createNewStructures(int chunkX, int chunkZ, IChunkGenerator cg){
+    public ModStructure createNewStructures(int chunkX, int chunkZ, IChunkGenerator cg, Random rand) {
 	return null;
     }
 }

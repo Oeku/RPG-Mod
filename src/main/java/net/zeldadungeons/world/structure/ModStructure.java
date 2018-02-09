@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkProviderServer;
+import net.zeldadungeons.world.ICustomCG;
 
 public class ModStructure {
     /**
@@ -31,7 +32,6 @@ public class ModStructure {
 	this.boundingBoxPositions = new BlockPos[8];
 	this.structurePieces = new ArrayList<StructurePiece>();
 	this.affectedChunks = new ArrayList<ChunkPos>();
-
     }
 
     /**
@@ -69,7 +69,7 @@ public class ModStructure {
 	this.boundingBoxPositions[5] = new BlockPos(pos).add(0, ySize, zSize);
 	this.boundingBoxPositions[6] = new BlockPos(pos).add(xSize, ySize, 0);
 	this.boundingBoxPositions[7] = new BlockPos(pos).add(xSize, ySize, zSize);
-
+	
 	int xDiff = boundingBoxPositions[0].getX() >> 4 - boundingBoxPositions[1].getX() >> 4;
 	int zDiff = boundingBoxPositions[0].getZ() >> 4 - boundingBoxPositions[2].getZ() >> 4;
 	for(int i = 0; i < xDiff; i++){
@@ -83,6 +83,10 @@ public class ModStructure {
     public BlockPos[] getPositions() {
 	return this.boundingBoxPositions;
     }
+    
+    public List<ChunkPos> getAffectedChunks(){
+	return this.affectedChunks;
+    }
 
     /**
      * Generate this structure. Use this bounding box for position. If the
@@ -94,5 +98,9 @@ public class ModStructure {
     public boolean generate() {
 	this.strutureType.generate(this);
 	return this.isFinished;
+    }
+
+    public ChunkProviderServer getProvider() {
+	return this.provider;
     }
 }

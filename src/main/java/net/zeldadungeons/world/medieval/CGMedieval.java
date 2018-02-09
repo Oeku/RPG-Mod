@@ -33,10 +33,11 @@ import net.minecraft.world.gen.feature.WorldGenDungeons;
 import net.minecraft.world.gen.structure.MapGenMineshaft;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.zeldadungeons.init.Blockizer;
+import net.zeldadungeons.world.ICustomCG;
 import net.zeldadungeons.world.structure.FortressGenerator;
 import net.zeldadungeons.world.structure.ModStructure;
 
-public class CGMedieval implements IChunkGenerator {
+public class CGMedieval implements IChunkGenerator, ICustomCG {
     protected static final IBlockState STONE = Blockizer.MEDIEVAL_STONE.getDefaultState();
     private final Random rand;
     private NoiseGeneratorOctaves minLimitPerlinNoise;
@@ -71,11 +72,9 @@ public class CGMedieval implements IChunkGenerator {
     private FortressGenerator[] fortressGens = new FortressGenerator[1];
 
     private double[] heightGen;
-    
+
     private List<ModStructure> structureList;
     private List<Chunk> cachedChunks;
-
-    
 
     public CGMedieval(World worldIn, long seed, boolean mapFeaturesEnabledIn, String generatorOptions) {
 	{
@@ -206,10 +205,32 @@ public class CGMedieval implements IChunkGenerator {
 	}
     }
 
+    public Chunk getChunkAt(int x, int z){
+	long key = ChunkPos.asLong(x, z);
+	if(this.world.isChunkGeneratedAt(x, z))
+	{
+	    return this.world.getChunkFromChunkCoords(x, z);
+	}
+	else if(this.chunkCache.containsKey(key))
+	{
+	    return this.chunkCache.get(key);
+	}
+	else return preGenerate(x, z);
+    }
+    
+    public Chunk preGenerate(int x, int z){
+	return generateChunk(x, z);
+	
+    }
+    
     /**
      * Generates the chunk at the specified position, from scratch
      */
     public Chunk generateChunk(int x, int z) {
+	long key = ChunkPos.asLong(x, z);
+	if(this.chunkCache.containsKey(key)){
+	    return this.chunkCache.get(key);
+	}
 	long begin = System.nanoTime() / 100;
 	this.rand.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
 	ChunkPrimer chunkprimer = new ChunkPrimer();
@@ -236,7 +257,6 @@ public class CGMedieval implements IChunkGenerator {
 	chunk.generateSkylightMap();
 	return chunk;
     }
-
 
     private void generateHeightmap(int x, int y, int z) {
 	this.heightGen = this.customNoise2.generateNoiseOctaves(this.depthRegion, x, z, 5, 5, (double) this.settings.depthNoiseScaleX, (double) this.settings.depthNoiseScaleZ, (double) this.settings.depthNoiseScaleExponent);
@@ -399,10 +419,10 @@ public class CGMedieval implements IChunkGenerator {
 		}
 	    }
 	}
-	
+
 	/** MOD STRUCTURE PART **/
-	for(ModStructure structure : this.structureList){
-	     structure.generate();  
+	for (ModStructure structure : this.structureList) {
+	    structure.generate();
 	}
 
 	net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(false, this, this.world, this.rand, x, z, flag);
@@ -427,7 +447,7 @@ public class CGMedieval implements IChunkGenerator {
     }
 
     public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
-	 return false;
+	return false;
     }
 
     @Nullable
