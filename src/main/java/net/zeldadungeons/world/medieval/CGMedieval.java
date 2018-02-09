@@ -13,6 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.WorldServer;
@@ -71,8 +72,9 @@ public class CGMedieval implements IChunkGenerator {
 
     private double[] heightGen;
     
-    private List structureList;
-    
+    private List<ModStructure> structureList;
+    private List<Chunk> cachedChunks;
+
     
 
     public CGMedieval(World worldIn, long seed, boolean mapFeaturesEnabledIn, String generatorOptions) {
@@ -212,7 +214,6 @@ public class CGMedieval implements IChunkGenerator {
 	this.rand.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
 	ChunkPrimer chunkprimer = new ChunkPrimer();
 	this.setBlocksInChunk(x, z, chunkprimer);
-
 	long setBlocks = System.nanoTime() / 100;
 	this.biomesForGeneration = this.world.getBiomeProvider().getBiomes(this.biomesForGeneration, x * 16, z * 16, 16, 16);
 	this.replaceBiomeBlocks(x, z, chunkprimer, this.biomesForGeneration);
@@ -401,7 +402,7 @@ public class CGMedieval implements IChunkGenerator {
 	
 	/** MOD STRUCTURE PART **/
 	for(ModStructure structure : this.structureList){
-	     structure.generate(x, z);  
+	     structure.generate();  
 	}
 
 	net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(false, this, this.world, this.rand, x, z, flag);
