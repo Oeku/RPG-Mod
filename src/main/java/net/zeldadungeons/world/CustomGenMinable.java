@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+import net.zeldadungeons.util.Log;
 
 public class CustomGenMinable extends WorldGenerator
 {
@@ -81,6 +82,7 @@ public class CustomGenMinable extends WorldGenerator
                                     if (state == this.replaceBlock)
                                     {
                                         worldIn.setBlockState(blockpos, this.oreBlock, 2);
+                                        //Log.getLogger().info("Placed Ore at"+blockpos);
                                         //if(worldIn.getBlockState(blockpos).getBlock() == Blockizer.SAPPHIRE_ORE)Log.getLogger().info("Minable "+oreBlock.getBlock().getRegistryName()+" "+blockpos.getX()+" "+blockpos.getY()+" "+blockpos.getZ());
                                     }
                                 }

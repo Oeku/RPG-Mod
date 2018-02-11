@@ -13,7 +13,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.ChunkCache;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.WorldServer;
@@ -33,9 +32,11 @@ import net.minecraft.world.gen.feature.WorldGenDungeons;
 import net.minecraft.world.gen.structure.MapGenMineshaft;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.zeldadungeons.init.Blockizer;
+import net.zeldadungeons.util.Log;
 import net.zeldadungeons.world.ICustomCG;
 import net.zeldadungeons.world.structure.FortressGenerator;
 import net.zeldadungeons.world.structure.ModStructure;
+import net.zeldadungeons.world.structure.ModStructureType;
 
 public class CGMedieval implements IChunkGenerator, ICustomCG {
     protected static final IBlockState STONE = Blockizer.MEDIEVAL_STONE.getDefaultState();
@@ -74,7 +75,7 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
     private double[] heightGen;
 
     private List<ModStructure> structureList;
-    private List<Chunk> cachedChunks;
+    private List<ModStructureType> structureTypes;
 
     public CGMedieval(World worldIn, long seed, boolean mapFeaturesEnabledIn, String generatorOptions) {
 	{
@@ -83,12 +84,13 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
 	    if (worldIn instanceof WorldServer) {
 		server = (WorldServer) worldIn;
 		tm = server.getStructureTemplateManager();
-
 	    }
 	    caveGenerator = net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(caveGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.CAVE);
 	    mineshaftGenerator = (MapGenMineshaft) net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(mineshaftGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.MINESHAFT);
 	    ravineGenerator = net.minecraftforge.event.terraingen.TerrainGen.getModdedMapGen(ravineGenerator, net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.RAVINE);
 	    this.structureList = new ArrayList<ModStructure>();
+	    this.structureTypes = new ArrayList<ModStructureType>();
+	    this.structureTypes.add(new MSTMedievalVillage());
 	}
 	this.world = worldIn;
 	this.mapFeaturesEnabled = mapFeaturesEnabledIn;
@@ -205,30 +207,30 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
 	}
     }
 
-    public Chunk getChunkAt(int x, int z){
+    public Chunk getChunkAt(int x, int z) {
+	Log.getLogger().info("Got Chunk " + x + " " + z);
 	long key = ChunkPos.asLong(x, z);
-	if(this.world.isChunkGeneratedAt(x, z))
-	{
+	if (this.world.isChunkGeneratedAt(x, z)) {
 	    return this.world.getChunkFromChunkCoords(x, z);
 	}
-	else if(this.chunkCache.containsKey(key))
-	{
+	else if (this.chunkCache.containsKey(key)) {
 	    return this.chunkCache.get(key);
 	}
 	else return preGenerate(x, z);
     }
-    
-    public Chunk preGenerate(int x, int z){
+
+    public Chunk preGenerate(int x, int z) {
+	Log.getLogger().info("Pregenerated Chunk " + x + " " + z);
 	return generateChunk(x, z);
-	
+
     }
-    
+
     /**
      * Generates the chunk at the specified position, from scratch
      */
     public Chunk generateChunk(int x, int z) {
 	long key = ChunkPos.asLong(x, z);
-	if(this.chunkCache.containsKey(key)){
+	if (this.chunkCache.containsKey(key)) {
 	    return this.chunkCache.get(key);
 	}
 	long begin = System.nanoTime() / 100;
@@ -239,22 +241,16 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
 	this.biomesForGeneration = this.world.getBiomeProvider().getBiomes(this.biomesForGeneration, x * 16, z * 16, 16, 16);
 	this.replaceBiomeBlocks(x, z, chunkprimer, this.biomesForGeneration);
 	long setBiome = System.nanoTime() / 100;
-	if (this.settings.useCaves) {
-	    this.caveGenerator.generate(this.world, x, z, chunkprimer);
-	}
 
-	if (this.settings.useRavines) {
-	    this.ravineGenerator.generate(this.world, x, z, chunkprimer);
-	}
-
-	if (this.mapFeaturesEnabled) {
-	    if (this.settings.useMineShafts) {
-		this.mineshaftGenerator.generate(this.world, x, z, chunkprimer);
-	    }
-	}
 	long genStructures = System.nanoTime() / 100;
 	Chunk chunk = new Chunk(this.world, chunkprimer, x, z);
+
 	chunk.generateSkylightMap();
+
+	/** MOD STRUCTURE PART **/
+	for (ModStructure structure : this.structureList) {
+	    structure.generate();
+	}
 	return chunk;
     }
 
@@ -420,10 +416,6 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
 	    }
 	}
 
-	/** MOD STRUCTURE PART **/
-	for (ModStructure structure : this.structureList) {
-	    structure.generate();
-	}
 
 	net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(false, this, this.world, this.rand, x, z, flag);
 
@@ -436,7 +428,14 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
      */
     public boolean generateStructures(Chunk chunkIn, int x, int z) {
 	boolean flag = false;
-
+	// create new ModStructure instances available for generation!
+	for (ModStructureType s : this.structureTypes) {
+	    ModStructure structure = s.createNewStructures(chunkIn, x, z, this, this.rand);
+	    if (structure != null) {
+		Log.getLogger().info("Added new Structure at " + x + " " + z);
+		this.structureList.add(structure);
+	    }
+	}
 	return flag;
     }
 
@@ -473,5 +472,10 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
 
     public String getBiomeAt(BlockPos pos) {
 	return this.world.getChunkFromBlockCoords(pos).getBiome(pos, this.world.getBiomeProvider()).getBiomeName();
+    }
+
+    @Override
+    public World getWorld() {
+	return this.world;
     }
 }

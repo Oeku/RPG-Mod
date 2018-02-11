@@ -20,6 +20,7 @@ import net.zeldadungeons.event.WorldHandler;
 import net.zeldadungeons.init.Dimensionizer;
 import net.zeldadungeons.init.Generizer;
 import net.zeldadungeons.init.Recipizer;
+import net.zeldadungeons.init.Structurizer;
 import net.zeldadungeons.network.GuiHandler;
 import net.zeldadungeons.network.NetworkHandler;
 import net.zeldadungeons.util.Log;
@@ -44,11 +45,7 @@ public class ZeldaDungeons {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 	/** Testing Area **/
-	Log.logInt(RANDOM.nextInt());
-	Log.logInt(RANDOM.nextInt());
-	Log.logInt(RANDOM.nextInt());
-	Log.logInt(RANDOM.nextInt());
-
+	
 	/** End **/
 	Log.logString("PreInitialization - Arpg");
 	CapabilityHandler.INSTANCE.registerCapabilities();
@@ -65,6 +62,7 @@ public class ZeldaDungeons {
 	Generizer.registerWorldGenerators();
 	Recipizer.registerSmeltings();
 	Dimensionizer.registerDimensions();
+	Structurizer.initTemplates();
 	proxy.init();
     }
 

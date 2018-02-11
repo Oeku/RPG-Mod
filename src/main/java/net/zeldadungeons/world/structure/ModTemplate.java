@@ -3,21 +3,21 @@ package net.zeldadungeons.world.structure;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.template.Template;
 
-public class FortressTemplate {
+public class ModTemplate {
 
     private int offX;
     private int offY;
     private int offZ;
     private final ResourceLocation path;
 
-    public FortressTemplate(int offX, int offY, int offZ, ResourceLocation resource) {
+    public ModTemplate(int offX, int offY, int offZ, ResourceLocation resource) {
 	this.path = resource;
 	this.offX = offX;
 	this.offY = offY;
 	this.offZ = offZ;
     }
     
-    public FortressTemplate(ResourceLocation resource) {
+    public ModTemplate(ResourceLocation resource) {
 	this(0, 0, 0, resource);
     }
 

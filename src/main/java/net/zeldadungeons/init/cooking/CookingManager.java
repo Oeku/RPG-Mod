@@ -88,6 +88,7 @@ public class CookingManager {
 	    if (list.size() >= 2) j = ZeldaDungeons.RANDOM.nextInt(list.size() - 1);
 	    finalMeal = list.get(j);
 	}
+	//ERROR CAPABILITY!!!!
 	stack.getCapability(CapabilityCookingData.COOKING, CapabilityCookingData.DEFAULT_FACING).getContainer().setPerfect(perfect);
 	return finalMeal;
     }

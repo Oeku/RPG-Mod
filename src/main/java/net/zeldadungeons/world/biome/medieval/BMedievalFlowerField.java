@@ -25,7 +25,7 @@ public class BMedievalFlowerField extends BMedievalHills {
 	for(int i = 0; i < 4; i++){
 	    int xOff = rand.nextInt(16);
 	    int zOff = rand.nextInt(16);
-	    this.TREE_FEATURE.generate(worldIn, rand, new BlockPos(xOff+pos.getX(), worldIn.getHeight(xOff+pos.getX(), zOff+pos.getZ()), zOff+pos.getZ()));
+	    this.TREE_FEATURE.generate(worldIn, rand, new BlockPos(xOff+pos.getX()+8, worldIn.getHeight(xOff+pos.getX(), zOff+pos.getZ()), zOff+pos.getZ()+8));
 	}
 	for (int i = 0; i < 50; i++) {
 	    int xOff = rand.nextInt(16);
@@ -48,7 +48,7 @@ public class BMedievalFlowerField extends BMedievalHills {
 	    else if (i == 1) flowerState = CYAN_COLUMBINE;
 	    else flowerState = PINK_COLUMBINE;
 	    worldIn.setBlockState(pos.up(), flowerState);
-	    //Log.getLogger().info("generated flower at"+ pos.getX()+" "+ pos.getZ());
+	    Log.getLogger().info("generated flower at"+ pos.getX()+" "+ pos.getZ());
 	}
 	pos.down();
     }

@@ -39,7 +39,7 @@ public class SpawnEventHandler {
     @SubscribeEvent
     public void onPlayerLogIn(PlayerLoggedInEvent e){
 	e.player.getCapability(CapabilityPlayerLevels.PLAYER_LEVELS_CAPABILITY, CapabilityPlayerLevels.DEFAULT_FACING).setPlayer(e.player);
-	//if(e.player.dimension != Dimensionizer.medievalID)e.player.world.getMinecraftServer().getPlayerList().transferPlayerToDimension((EntityPlayerMP) e.player, Dimensionizer.medievalID, new TeleporterCustom(e.player.world.getMinecraftServer().getWorld(Dimensionizer.medievalID)));
+	if(e.player.dimension != Dimensionizer.medievalID)e.player.world.getMinecraftServer().getPlayerList().transferPlayerToDimension((EntityPlayerMP) e.player, Dimensionizer.medievalID, new TeleporterCustom(e.player.world.getMinecraftServer().getWorld(Dimensionizer.medievalID)));
 
     }
 }

@@ -2,10 +2,20 @@ package net.zeldadungeons.world.structure;
 
 import java.util.Random;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.IChunkGenerator;
-
+/** Only usable for custom dimensions
+ * @author ArmamentHaki
+ */
 public class ModStructureType {
+    public static final IBlockState DIRT = Blocks.WOOL.getDefaultState();
+    public static final IBlockState AIR = Blocks.GLASS.getDefaultState();
+    public static final IBlockState GRASS = Blocks.WOOL.getDefaultState();
+
+    
     protected int maxSize[];
     protected int minSize[];
     
@@ -42,13 +52,13 @@ public class ModStructureType {
 	return true;
     }
     
-    /** Creates a new structure at chunk, if it is suitable.
+    /** Creates a new structure at a given chunk position, if it is suitable.
      * 
      * @param chunkX
      * @param chunkZ
      * @return The ModStructure, if a structure was created in this chunk. Else null !!! Add != null check in CG !!!.
      */
-    public ModStructure createNewStructures(int chunkX, int chunkZ, IChunkGenerator cg, Random rand) {
+    public ModStructure createNewStructures(Chunk chunk, int chunkX, int chunkZ, IChunkGenerator cg, Random rand) {
 	return null;
     }
 }

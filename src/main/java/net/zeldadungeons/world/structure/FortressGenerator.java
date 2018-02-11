@@ -24,7 +24,7 @@ public class FortressGenerator implements IWorldGenerator {
     private int ySize;
     private int zSize;
     private String name;
-    FortressTemplate[] pieces;
+    ModTemplate[] pieces;
 
     private static final IBlockState GRASS = Blocks.GRASS.getDefaultState();
 
@@ -38,7 +38,7 @@ public class FortressGenerator implements IWorldGenerator {
      * @param pieces All the pieces that belong to the structure that needs to
      * be generated.
      */
-    public FortressGenerator(int xS, int yS, int zS, String name, FortressTemplate... pieces) {
+    public FortressGenerator(int xS, int yS, int zS, String name, ModTemplate... pieces) {
 	this.xSize = xS;
 	this.ySize = yS;
 	this.zSize = zS;
@@ -63,7 +63,7 @@ public class FortressGenerator implements IWorldGenerator {
 	WorldServer server = (WorldServer) world;
 	TemplateManager tm = server.getStructureTemplateManager();
 	for (int i = 0; i < pieces.length; i++) {
-	    FortressTemplate ft = pieces[i];
+	    ModTemplate ft = pieces[i];
 	    Template template = tm.get(server.getMinecraftServer(), ft.getPath());
 	    template.addBlocksToWorld(world, pos.add(ft.getOffX() - xSize / 2, ft.getOffY(), ft.getOffZ() - zSize / 2), settings);
 	    Log.getLogger().info("generated fortress piece");

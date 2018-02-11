@@ -6,32 +6,38 @@ import java.util.List;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.ChunkProviderServer;
-import net.zeldadungeons.world.ICustomCG;
+import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.zeldadungeons.util.Log;
 
 public class ModStructure {
     /**
      * true if this structure's blocks are already integrated into the world.
      **/
     private boolean isFinished;
-    private boolean watchY;
+    private boolean isGenerating;
     private int xSize;
     private int ySize;
     private int zSize;
-    private BlockPos[] boundingBoxPositions;
+    private StructureBoundingBox boundingBox;
     private World world;
-    private ChunkProviderServer provider;
+    private IChunkGenerator provider;
     /** What kind of structure this is **/
     private ModStructureType strutureType;
-    private List<StructurePiece> structurePieces;
+    /**
+     * All Components that this structure contains. Positions, Rotations and
+     * additional Data are stored in here
+     **/
+    private List<StructureComponent> structurePieces;
     private List<ChunkPos> affectedChunks;
 
-    public ModStructure(ChunkProviderServer provider) {
+    public ModStructure(IChunkGenerator provider, ModStructureType type) {
 	this.provider = provider;
-	this.world = provider.world;
-	this.boundingBoxPositions = new BlockPos[8];
-	this.structurePieces = new ArrayList<StructurePiece>();
+	this.structurePieces = new ArrayList<StructureComponent>();
 	this.affectedChunks = new ArrayList<ChunkPos>();
+	this.strutureType = type;
+	this.boundingBox = new StructureBoundingBox();
+	Log.getLogger().info("initializing structure");
     }
 
     /**
@@ -55,36 +61,32 @@ public class ModStructure {
      * @param pos The Starting Position
      */
     public void setPositions(BlockPos pos) {
-	/**
-	 * 0 = left bottom corner near 1 = left bottom corner far 2 = right
-	 * bottom corner near 3 = right bottom corner far 4 = left top corner
-	 * near 5 = left top corner far 6 = right top corner near 7 = right top
-	 * corner far
-	 */
-	this.boundingBoxPositions[0] = pos;
-	this.boundingBoxPositions[1] = new BlockPos(pos).add(xSize, 0, 0);
-	this.boundingBoxPositions[2] = new BlockPos(pos).add(0, 0, zSize);
-	this.boundingBoxPositions[3] = new BlockPos(pos).add(xSize, 0, zSize);
-	this.boundingBoxPositions[4] = new BlockPos(pos).add(0, ySize, 0);
-	this.boundingBoxPositions[5] = new BlockPos(pos).add(0, ySize, zSize);
-	this.boundingBoxPositions[6] = new BlockPos(pos).add(xSize, ySize, 0);
-	this.boundingBoxPositions[7] = new BlockPos(pos).add(xSize, ySize, zSize);
-	
-	int xDiff = boundingBoxPositions[0].getX() >> 4 - boundingBoxPositions[1].getX() >> 4;
-	int zDiff = boundingBoxPositions[0].getZ() >> 4 - boundingBoxPositions[2].getZ() >> 4;
-	for(int i = 0; i < xDiff; i++){
-	    for(int j = 0; j < zDiff; j++){
-		this.affectedChunks.add(new ChunkPos(i, j));
+	this.boundingBox.minX = pos.getX();
+	this.boundingBox.minY = pos.getY();
+	this.boundingBox.minZ = pos.getZ();
+	pos = pos.add(this.xSize, this.ySize, this.zSize);
+	this.boundingBox.maxX = pos.getX();
+	this.boundingBox.maxY = pos.getY();
+	this.boundingBox.maxZ = pos.getZ();
+
+	int xStart = this.boundingBox.minX >> 4;
+	int zStart = this.boundingBox.minZ >> 4;
+
+	int xDiff = (this.boundingBox.maxX >> 4) - xStart;
+	int zDiff = (this.boundingBox.maxZ >> 4) - zStart;
+
+	for (int i = 0; i <= xDiff; i++) {
+	    for (int j = 0; j <= zDiff; j++) {
+		this.affectedChunks.add(new ChunkPos(i + xStart, j + zStart));
 	    }
 	}
-
     }
 
-    public BlockPos[] getPositions() {
-	return this.boundingBoxPositions;
+    public StructureBoundingBox getBoundingBox() {
+	return this.boundingBox;
     }
-    
-    public List<ChunkPos> getAffectedChunks(){
+
+    public List<ChunkPos> getAffectedChunks() {
 	return this.affectedChunks;
     }
 
@@ -96,11 +98,14 @@ public class ModStructure {
      * @return Whether this structure is finished.
      */
     public boolean generate() {
+	if(isGenerating)return false;
+	isGenerating = true;
 	this.strutureType.generate(this);
+	isGenerating = false;
 	return this.isFinished;
     }
 
-    public ChunkProviderServer getProvider() {
+    public IChunkGenerator getProvider() {
 	return this.provider;
     }
 }

@@ -20,7 +20,7 @@ import net.zeldadungeons.world.WorldGenOres;
 import net.zeldadungeons.world.biome.medieval.BMedievalFlowerField;
 import net.zeldadungeons.world.biome.medieval.BMedievalHills;
 import net.zeldadungeons.world.structure.FortressGenerator;
-import net.zeldadungeons.world.structure.FortressTemplate;
+import net.zeldadungeons.world.structure.ModTemplate;
 import net.zeldadungeons.world.structure.MGMedievalVillage;
 
 @Mod.EventBusSubscriber(modid = ZeldaDungeons.MODID)
@@ -40,10 +40,10 @@ public class Generizer {
     public static void registerWorldGenerators() {
 	GameRegistry.registerWorldGenerator(new WorldGenOres(), 1000);
 	GameRegistry.registerWorldGenerator(new WorldGenAmber(), 1000);
-	GameRegistry.registerWorldGenerator(new FortressGenerator(37, 30, 40, "Fortress1",
+	/*GameRegistry.registerWorldGenerator(new FortressGenerator(37, 30, 40, "Fortress1",
 		new FortressTemplate(0, 0, 0, new ResourceLocation(ZeldaDungeons.MODID, "fortress1_1")), 
 		new FortressTemplate(31, 0, 11, new ResourceLocation(ZeldaDungeons.MODID, "fortress1_2")),
-		new FortressTemplate(0, 0, 31, new ResourceLocation(ZeldaDungeons.MODID, "fortress1_3"))), 1);
+		new FortressTemplate(0, 0, 31, new ResourceLocation(ZeldaDungeons.MODID, "fortress1_3"))), 1);*/
 	registerStructures();
     }
 
