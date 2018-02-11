@@ -74,7 +74,7 @@ public class MSTMedievalVillage extends ModStructureTypeMulti {
 	ModStructure structure = new ModStructure(cg, this);
 	structure.setSize(sizeX, 50, sizeZ);
 	structure.setPositions(pos);
-
+	structure.generate();
 	return structure;
     }
 
@@ -153,7 +153,7 @@ public class MSTMedievalVillage extends ModStructureTypeMulti {
 			placed++;
 		    }
 		    else chunk.setBlockState(posrator, DIRT);
-		    posrator.south();
+		    posrator.north();
 		    placed++;
 		}
 		posrator.east();

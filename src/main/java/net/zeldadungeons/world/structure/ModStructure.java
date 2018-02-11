@@ -37,6 +37,7 @@ public class ModStructure {
 	this.affectedChunks = new ArrayList<ChunkPos>();
 	this.strutureType = type;
 	this.boundingBox = new StructureBoundingBox();
+	this.isGenerating = false;
 	Log.getLogger().info("initializing structure");
     }
 

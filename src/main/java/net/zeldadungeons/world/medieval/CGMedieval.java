@@ -1,6 +1,7 @@
 package net.zeldadungeons.world.medieval;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -246,11 +247,6 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
 	Chunk chunk = new Chunk(this.world, chunkprimer, x, z);
 
 	chunk.generateSkylightMap();
-
-	/** MOD STRUCTURE PART **/
-	for (ModStructure structure : this.structureList) {
-	    structure.generate();
-	}
 	return chunk;
     }
 
@@ -436,6 +432,7 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
 		this.structureList.add(structure);
 	    }
 	}
+	
 	return flag;
     }
 
@@ -464,11 +461,6 @@ public class CGMedieval implements IChunkGenerator, ICustomCG {
 
     }
 
-    public void checkBiomes(Biome bin) {
-	if (bin.getBaseHeight() < 1.2F) {
-
-	}
-    }
 
     public String getBiomeAt(BlockPos pos) {
 	return this.world.getChunkFromBlockCoords(pos).getBiome(pos, this.world.getBiomeProvider()).getBiomeName();
